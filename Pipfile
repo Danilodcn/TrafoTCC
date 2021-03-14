@@ -9,6 +9,8 @@ pandas = "*"
 matplotlib = "*"
 ipdb = "*"
 ipython = "*"
+pytest = "*"
+click = "*"
 
 [dev-packages]
 

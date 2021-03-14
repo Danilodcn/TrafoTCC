@@ -1,7 +1,1 @@
-
-class Trafo(object):
-
-    def __init__(self):
-        ...
-
-
+__all__ = ["CONSTANTES"]

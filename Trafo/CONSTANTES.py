@@ -11,8 +11,8 @@ VARIAVEIS = {
 CONSTANTES_DADAS = {
     "Ke": 1,        # Constante de empilhamento \
                     # - Fornecido pelo fabricante das chapas do núcleo
-    "Q": 1,         # Potencia do Transformador [VA]
-    "Nfases": 1     # Numero de fases do Transformador
+    "S": 1,         # Potencia do Transformador [VA]
+    "Nfases": 1,    # Numero de fases do Transformador
     "f": 60         # Frequencia da rede em Hz
 }
 
