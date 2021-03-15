@@ -23,9 +23,16 @@ def tests():
     type=int,
     help='realiza os testes usando o arquivo "teste_{n}.json"'
     )
-def teste(t):
-    config = {"n": t}
-    dump(config, open("tests/config.json", "w"))
+@click.option(
+    "-error", 
+    required=False, 
+    type=float,
+    help='Para todos os os testes aceita esse erro em %'
+    )
+def teste(t, error=0):
+    error /= 100
+    config = {"n": t, "error": error}
+    dump(config, open("tests/json/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")
     testrunner = runner.TextTestRunner()
