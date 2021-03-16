@@ -24,7 +24,7 @@ class Trafo(object):
         self.constantes = self.inicia_as_variaveis(CONSTANTES_DADAS, cons)
         self.resultado_calculos = utils.QueryDict({})
 
-        # self.calculo_de_dados_do_trafo()
+        # self.calculo_de_dados_do_trafo() 
         # self.calculo_das_dimensoes_do_trafo()
     
     def __repr__(self):
@@ -138,7 +138,6 @@ class Trafo(object):
         D = ww + wc             # é a distância entre os centros de duas colunas [m]
         W = 2 * D + wc          # é a largura total do núcleo [m]
 
-        # import ipdb; ipdb.set_trace()
         
         # Estimativa da corrente de carga
         Abj = rel * Abc     # é a área bruta da culatra [mm²]
@@ -149,10 +148,21 @@ class Trafo(object):
 
         H = hw + 2 * hy     # é a altura total do núcleo [m]
         Vferc = 3 * hw * Ac # Volume de ferro no núcleo [mm³]
-        Bfe = Dfe * 1e-9    # Densidade do ferro em milímetros
-        Mc = Vferc * Bfe
+        Bfe = Dfe * 1e-9    # Densidade do ferro em [Kg / mm³]
+        Mc = Vferc * Bfe    # Massa da culatra  [Kg]
 
+        # import ipdb; ipdb.set_trace()
         #TODO realizar os testes a partir daqui
+        
+        Pic = tabelas.perda_magnetica_do_nucleo(Bm) #Perda magnética [W/Kg]
+        # FIXME Bm nao pode ser superiror a 1.85, caso contrario a interpolação resultará em null
+        assert isinstance(Pic, int) or isinstance(Pic, float) 
+        # import ipdb; ipdb.set_trace()
+        
+        Wic = Pic * Mc          # perda específica no núcleo [W]
+        Vferj = Aj * W * 2      # é o volume do ferro nas culatras
+        Mj = Vferj * Bfe
+        MT = Mj + Mc            # Massa total do Trafo [Kg]
 
         para_teste = {
             "Et": Et,
@@ -181,10 +191,15 @@ class Trafo(object):
             "Bfe": Bfe,
             "Mc": Mc,
             "H": H,
+            "Pic": Pic,
+            "Wic": Wic,
+            "Vferj": Vferj,
+            "Mj": Mj,
+            "MT": MT,
 
         }
         # para_teste = {
-        #     "Prof": Prof
+        #     "Pic": Pic,
         # }
         self.resultado_calculos.update(para_teste)
         

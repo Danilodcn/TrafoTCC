@@ -25,6 +25,9 @@ def print_dict(dicionario: dict[float, float], simbolo: str = "-") -> str:
     return ", ".join(lista)
 
 def erro_e_aceitavel(a: float, b: float, error: float) -> bool:
+    if a == 0:
+        if b == 0: return True
+        else: return False
     return abs(a - b) / a <= error 
 
 
@@ -94,6 +97,7 @@ class TestTrafo(TestCase):
         txt = "Erros encontrados ao executar o teste do calculo das dimenções do trafo. "
         txt += "Os erros foram: [{}]".format(msg)
         
+        # import ipdb; ipdb.set_trace()
         self.assertDictEqual(not_pass, {}, txt)
    
                         

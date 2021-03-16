@@ -1,3 +1,5 @@
+from numpy import interp
+
 tabelas = {
     "2.1": {
         "oleo": [8, 10, 12],
@@ -32,8 +34,8 @@ tabelas = {
     },
 
     "perda_magnetica": {
-        [0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.4, 1.6, 1.7, 1.8, 1.85], 
-        [0.0, 0.022, 0.048, 0.082, 0.124, 0.174, 0.231, 0.297, 0.37, 0.452, 0.542, 0.643, 0.886, 1.21, 1.463, 1.867, 2.122]
+        "inducao": [0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.4, 1.6, 1.7, 1.8, 1.85], 
+        "perdas": [0.0, 0.022, 0.048, 0.082, 0.124, 0.174, 0.231, 0.297, 0.37, 0.452, 0.542, 0.643, 0.886, 1.21, 1.463, 1.867, 2.122]
     }
 }
 
@@ -88,9 +90,13 @@ def tabela_2_5(tipo: str, numero_degraus: int) -> float:
         raise KeyError(txt)
 
 
-def perda_magnetica_do_nucleo(B: float) -> float:
+def perda_magnetica_do_nucleo(Bm: float) -> float:
     # Essa função vai realizar a inporlação usando método numpy.interp
     # TODO Realizar os testes nas saidas, pois na linha 156 do código MATLAB ocorre um erro.
     # Quando executo a saída é null (not a number)
-    
-    ...
+    b = tabelas["perda_magnetica"]["inducao"]
+    p = tabelas["perda_magnetica"]["perdas"]
+
+    P = interp(Bm, b, p)
+    # import ipdb; ipdb.set_trace()
+    return P

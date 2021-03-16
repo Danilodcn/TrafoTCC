@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc70d1f8-e23b-4757-9f39-04bef083b7fb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/TrafoTCC.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TrafoTCC.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trafo/CONSTANTES.py" beforeDir="false" afterPath="$PROJECT_DIR$/Trafo/CONSTANTES.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trafo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Trafo/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trafo/trafo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Trafo/trafo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out.json" beforeDir="false" afterPath="$PROJECT_DIR$/out.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_trafo.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_trafo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +24,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -103,6 +94,7 @@
       <workItem from="1615685132080" duration="716000" />
       <workItem from="1615733476813" duration="784000" />
       <workItem from="1615734963489" duration="1897000" />
+      <workItem from="1615908035612" duration="656000" />
     </task>
     <servers />
   </component>
