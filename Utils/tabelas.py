@@ -1,4 +1,8 @@
 tabelas = {
+    "2.1": {
+        "oleo": [8, 10, 12],
+        "seco": [4, 6, 8]
+    },
     "2.3": {
         "1": [3], 
         "2": [3, 5], 
@@ -25,9 +29,23 @@ tabelas = {
     "2.5":{
         "seco": [0.37, 0.46, 0.49, 0.525, 0.505], 
         "oleo": [0.45, 0.56, 0.6, 0.62, 0.625]
+    },
+
+    "perda_magnetica": {
+        [0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.4, 1.6, 1.7, 1.8, 1.85], 
+        [0.0, 0.022, 0.048, 0.082, 0.124, 0.174, 0.231, 0.297, 0.37, 0.452, 0.542, 0.643, 0.886, 1.21, 1.463, 1.867, 2.122]
     }
 }
 
+
+def tabela_2_1(tipo: str, S: float, tensao: float) -> float:
+    dados = tabelas["2.1"][tipo]
+    valor = 1 / (30 + tensao)
+
+    if 0 < S <= 10: return dados[0] * valor
+    if 10 < S <= 250: return dados[1] * valor
+    if S > 250: return dados[2] * valor
+    else: raise ValueError("Houve um erro ao executar essa fução")
 
 def tabela_2_3(area: float) -> int:
     """paramentros:
@@ -49,6 +67,7 @@ def tabela_2_3(area: float) -> int:
 
     raise ValueError("Houve um erro!!")
 
+
 def tabela_2_4(numero_degraus: int) -> list:
     tabela = tabelas["2.4"]
     Ku = tabela["Ku"][numero_degraus]
@@ -57,12 +76,21 @@ def tabela_2_4(numero_degraus: int) -> list:
     return Ku, L
 
 def tabela_2_5(tipo: str, numero_degraus: int) -> float:
+    numero_degraus -= 1
     tabela = tabelas["2.5"]
-    if numero_degraus > 5:
-        numero_degraus = 5
+    if numero_degraus > 4:
+        numero_degraus = 4
     try:
         return tabela[tipo][numero_degraus]
     except KeyError:
         txt = f'O tipo de transformador "{tipo}" não é suportado.'
         txt += 'Os tipos suportados sao: [{}]'.format(', '.join([f'"{i}"' for i in tabela.keys()]))
         raise KeyError(txt)
+
+
+def perda_magnetica_do_nucleo(B: float) -> float:
+    # Essa função vai realizar a inporlação usando método numpy.interp
+    # TODO Realizar os testes nas saidas, pois na linha 156 do código MATLAB ocorre um erro.
+    # Quando executo a saída é null (not a number)
+    
+    ...

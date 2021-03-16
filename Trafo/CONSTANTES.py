@@ -16,6 +16,8 @@ CONSTANTES_DADAS = {
     "f": 60,        # Frequencia da rede em Hz
     "V1": 1,        # Tensao no primário [Kv]
     "V2": 1,        # Tensao no secundário [Kv]
+    "tipo": "str",  # Tipo de refrigeração do transformador
+    "Dfe": 1,       # Densidade do ferroem [Kg/m³]
 }
 
 TABELAS = {}
