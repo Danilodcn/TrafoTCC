@@ -1,5 +1,6 @@
 import click
 from unittest import TestLoader, runner
+import unittest
 from json import dump
 
 
@@ -19,17 +20,17 @@ def tests():
 @click.option(
     "-t", 
     prompt="Teste", 
-    required=False, 
+    required=True, 
     type=int,
     help='realiza os testes usando o arquivo "teste_{n}.json"'
     )
 @click.option(
     "-error", 
-    required=False, 
+    required=True, 
     type=float,
     help='Para todos os os testes aceita esse erro em %'
     )
-def teste(t, error=0):
+def teste(t, error):
     error /= 100
     config = {"n": t, "error": error}
     dump(config, open("tests/json/config.json", "w"))

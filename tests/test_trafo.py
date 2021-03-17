@@ -28,7 +28,7 @@ def erro_e_aceitavel(a: float, b: float, error: float) -> bool:
     if a == 0:
         if b == 0: return True
         else: return False
-    return abs(a - b) / a <= error 
+    return abs((a - b) / a) <= error 
 
 
 class TestTrafo(TestCase):
@@ -87,11 +87,16 @@ class TestTrafo(TestCase):
         tests_variables = _trafo.resultado_calculos
         not_pass = {}
         for key, value in tests_variables.items():
+            
             try:
                 if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel):
                     not_pass[key] = [value, f"é diferente de {json_variables[key]}"]
             except:
                 not_pass[key] = [value, "não existe no JSON " + self.filename]
+
+            if key == "atc":
+                # import ipdb; ipdb.set_trace()
+                ...
 
         msg = print_dict(not_pass, " -> ")
         txt = "Erros encontrados ao executar o teste do calculo das dimenções do trafo. "
@@ -120,5 +125,4 @@ class TestTrafo(TestCase):
         txt =   "Alguns do calculos não estão corretos. Os valores sao: [{}]".format(msg)
         self.assertDictEqual(not_pass, {}, txt)
 
-        
         

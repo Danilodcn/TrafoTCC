@@ -2,6 +2,8 @@ from typing import Dict
 from math import sqrt, pi, cos, sin
 import numpy as np
 
+import os, sys
+sys.path.append(os.getcwd())
 
 try: 
     from Utils import utils, tabelas
@@ -83,6 +85,7 @@ class Trafo(object):
         Ke = self.constantes.Ke 
         tipo = self.constantes.tipo
         Dfe = self.constantes.Dfe
+        Dal = self.constantes.Dal
 
 
         # variaveis 
@@ -91,6 +94,7 @@ class Trafo(object):
         Rjan = self.variaveis.Rjan
         Ksw = self.variaveis.Ksw
         Jbt = self.variaveis.Jbt
+        Jat = self.variaveis.Jat
         rel = self.variaveis.rel
 
 
@@ -156,13 +160,68 @@ class Trafo(object):
         
         Pic = tabelas.perda_magnetica_do_nucleo(Bm) #Perda magnética [W/Kg]
         # FIXME Bm nao pode ser superiror a 1.85, caso contrario a interpolação resultará em null
+        
         assert isinstance(Pic, int) or isinstance(Pic, float) 
-        # import ipdb; ipdb.set_trace()
+
         
         Wic = Pic * Mc          # perda específica no núcleo [W]
         Vferj = Aj * W * 2      # é o volume do ferro nas culatras
         Mj = Vferj * Bfe
         MT = Mj + Mc            # Massa total do Trafo [Kg]
+
+        Pij = tabelas.perda_magnetica_do_nucleo(By) # é a perda magnética específica da densidade de fluxo magnético na culatra [W/kg]
+        assert isinstance(Pij, int) or isinstance(Pij, float)
+        Wij = Pij * Mj
+        Po = (Wic + Wij) * 1.05     # Perdas totais do ferro no transformador. 
+                                    # As perdas totais é a soma da perda nas colunas 
+                                    # + as perdas nas culatras (culatras e guarnições)
+        Ip = Po/(3 * Vf1) * 1e-3    # Componente da corrente ativa Ip da perda no núcleo [A]
+
+        atc = tabelas.curva_BH(Bm)
+        atj = tabelas.curva_BH(By)
+        
+        ATj = 2 * W * atj   # A força magnetomotriz na culatra [Ae]
+        ATc = 3 * hw * atc  # A força magnetomotriz na coluna [Ae]
+
+        ATcj = ATc + ATj    # A força magnetomotriz total [Ae]
+        Iq = ATcj / N1 * 1e-3 # N1 enrolamento do lado da BT conforme trafo WEG DE 150 KVA
+
+        Io = sqrt(Ip ** 2 + Iq ** 2) # A corrente a vazio [A]
+        # import ipdb; ipdb.set_trace()
+
+        I1 = S / 3 / Vf1   # FIXME S é a potencia total do Trafo
+        Fc1 = I1 / Jbt
+        Swind1 = Fc1 * N1
+        z = (hw * Kw) * 2
+        hb = (hw - z) * 1.11
+        tbt1 = Swind1/ hb * 1.1     # 10% de folga
+        tbt2 = tbt1 * 2
+
+        Dextbt = tbt2 + d           # diametro em mm
+        dmbt = (Dextbt + d) / 2     # diâmetro médio na baixa tensão em milímetros
+        Lmbt = pi * dmbt            # Comprimento médio em mm
+        Compbt1 = Lmbt * N1         # Comprimento do fio na baixa tensão
+        #dfc1 = sqrt(4 * Fc1 / pi)
+        VALbt = Compbt1 * Fc1 * 3
+
+        Mbt3 = VALbt * Dal
+        I2menor = (S / 3 / Vf2)     # corrente no secundário
+
+        Vmedio2 = 12                # TODO pergutar ao professor se esse valor deve ser dado do usuário
+        I2c = S / 3 / Vmedio2       # tap intermediário para dimensionamento dos condutores
+        
+        Fc2AT = I2c / Jat           # área do condutor em mm2 no secundário
+        dfc2AT  = sqrt(Fc2AT * 4 / pi)  # Diametro do condutor em mm
+        SwindAT = Fc2AT * N2            # Area referente a alta tensao
+        dAt = sqrt(SwindAT * 4 / pi)
+
+        tAT1 = SwindAT / hb * 1.1
+        Laxju = hw - hw * Kw / 2
+
+        tAT2 = tAT1 * 2
+
+        
+        ##  TODO realizar os testes e calcular os pesos dos condutores de aluminio pg 
 
         para_teste = {
             "Et": Et,
@@ -192,14 +251,60 @@ class Trafo(object):
             "Mc": Mc,
             "H": H,
             "Pic": Pic,
+            "Pij": Pij,
             "Wic": Wic,
             "Vferj": Vferj,
             "Mj": Mj,
             "MT": MT,
-
+            "Wij": Wij,
+            "Po": Po,
+            "Ip": Ip,
+            
+            "atc": atc,
+            "atj": atj,
+            "ATc": ATc,
+            "ATj": ATj,
+            "ATcj": ATcj,
+            "Iq": Iq,
+            "Io": Io,
+            "I1": I1,
+            "Fc1": Fc1,
+            "Swind1": Swind1,
+            "z": z,
+            "hb": hb,
+            "tbt1": tbt1,
+            "tbt2": tbt2
         }
+        
+        para_teste.update({
+            "Dextbt": Dextbt,
+            "dmbt": dmbt,
+            "Lmbt": Lmbt,
+            "Compbt1": Compbt1,
+            "VALbt": VALbt,
+            "Mbt3": Mbt3,
+            "I2c": I2c,
+            "Vmedio2": Vmedio2,
+            "Fc2AT": Fc2AT,
+            "SwindAT": SwindAT,
+            "dAt": dAt,
+
+
+        })
+        
         # para_teste = {
         #     "Pic": Pic,
         # }
+        # import ipdb; ipdb.set_trace()
+
         self.resultado_calculos.update(para_teste)
-        
+
+if __name__ == "__main__":
+    x = {"x":[1.3021543128344217,1.5635255416644525,1.5794831416883455,6.6443181301936916,0.48786093826602683,3.5623160916564953,1.1532825588799454],"z":235.72047565797871,"n":7,"J1":1.3021543128344217,"J2":1.5635255416644525,"Bm":1.5794831416883455,"Ksw":6.6443181301936916,"kt":0.48786093826602683,"Rjan":3.5623160916564953,"rel":1.1532825588799454,"Jbt":1.3021543128344217,"Jat":1.5635255416644525,"Ke":0.945,"k":0.505,"Ku":0.923,"Bs":1.8,"Br":1.2,"f":60,"Dfe":7650,"V1":0.22,"V2":13.8,"Vf1":0.12701705922171769,"Vf2":13.8,"Vmedio2":12,"Q":150.00000000000003,"Qf":50,"Et":5.9750518209360495,"N1":21.257900856468094,"N2":2309.6033998644211,"conexao":"delta-estrela","Ac":14200.134594495996,"Abc":15023.496285398611,"So":16280.170589916701,"dc":143.97415389616404,"S":150,"Nfases":3,"constantes":[150,60,3],"tipo":"seco","L1":138.07121358642132,"L2":125.97738465914354,"L3":110.57215019225399,"L4":92.143458493544983,"L5":69.539516331847224,"L6":40.4567372448221,"teta1":0.28734394299515853,"teta2":0.50536051028415729,"teta3":0.69508385432977249,"teta4":0.87629806116834064,"teta5":1.0667186967433886,"teta6":1.2859603924440046,"e1":20.401574503510474,"e2":14.449019266748714,"e3":11.253518280559966,"e4":9.2089516117657411,"e5":7.7202859597560547,"e6":6.0532073218644626,"Prof":138.17311388841082,"d":167.68744259765717,"wc":138.07121358642132,"a":14.808114505617922,"Proffem":108.80976486814993,"Kw":0.15169676096332629,"Aw":169453.11546824532,"Acm2":0.014200134594495996,"Awm2":0.16945311546824532,"ww":218.10144986280284,"hw":776.9463044598748,"D":356.17266344922416,"W":850.41654048486964,"Abj":17326.336239347864,"Aj":16376.767561579978,"hy":125.39585851224778,"By":1.3695543468743003,"H":1027.7380214843704,"Vferc":3.3098226288079463E+7,"Bfe":7.6500000000000013E-6,"Mc":253.20143110380795,"Pic":1.1767627,"Wic":297.958,"Vferj":2.7854148028087359E+7,"Mj":213.08423241486832,"MT":466.2856635186763,"Pij":0.84900862,"Wij":180.910355,"PESOTOTAL":466.2856635186763,"Po":502.811768,"Ip":1.31953871,"atc":58.1432,"ATc":135522.438,"atj":32.4908447,"ATj":55261.5039,"ATcj":190783.938,"ATT":190783.938,"Iq":8.97473049,"Io":9.07121658,"Fpocalculado":0.145464361,"I1":393.64791081110843,"Fc1":302.30511616879591,"dfc1":19.619042496561043,"Swind1":6426.3721879193336,"hb":600.76066997010469,"tbt1":11.766764637011006,"tbt2":23.533529274022012,"Dextbt":191.22097187167918,"dmbt":179.45420723466816,"Lmbt":563.77333744843349,"Compbt1":11984.637712998931,"VALbt":1.0869051888207221E+7,"Mbt3":29.346440098159498,"I2menor":3.6231884057971011,"I2c":4.166666666666667,"Fc2AT":2.6649175569150207,"dfc2AT":1.8420310575349219,"SwindAT":6154.902649809319,"dAt":88.524942517532665, "Dal": 2.7e-6}
+    from time import time
+
+    t0 = time()
+    trafo = Trafo(x, x)
+    trafo.calculo_de_dados_do_trafo()
+    trafo.calculo_das_dimensoes_do_trafo()
+    print(time() - t0)
