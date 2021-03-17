@@ -41,10 +41,22 @@ tabelas = {
     "curva_BH": {
         "B": [-1.85, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.85],
         "H": [-712.275, -362.03, -118.623, -62.081, -42.888, -34.032, -28.97, -25.97, -22.476, -19.53, -16.387, -12.672, -8.03, 0, 8.03, 12.672, 16.387, 19.53, 22.476, 25.97, 28.97, 34.032, 42.888, 62.081, 118.623, 362.03, 712.275]
-}
+    },
+    "curva_VA": {
+        "B":[0,0.2,0.3,0.4,0.5,0.6,0.8,1,1.2,1.5,1.6,1.7,1.8],
+        "S":[0,0.039,0.078,0.127,0.184,0.278,0.398,0.583,0.814,1.417,1.857,2.979,7.767]
+    },
     
 }
 
+def teste():
+    from matplotlib import  pyplot as plt
+    table = tabelas["2.5"]
+    x = table["oleo"]
+    y = range(1, len(x) + 1)
+
+    plt.plot(y, x)
+    plt.show()
 
 def tabela_2_1(tipo: str, S: float, tensao: float) -> float:
     dados = tabelas["2.1"][tipo]
@@ -108,7 +120,6 @@ def perda_magnetica_do_nucleo(Bm: float) -> float:
     return P
 
 def curva_BH(B: float):
-    from matplotlib import pyplot as plt
     table = tabelas["curva_BH"]
     
     
@@ -118,9 +129,21 @@ def curva_BH(B: float):
     # import ipdb; ipdb.set_trace()
 
     H = interp(B, b, h)
-    
-    plt.plot(b, h)
-    plt.plot(B, H, "*")
-    #plt.show()
+
     return H
 
+def curva_VA(B: float):
+    table = tabelas["curva_VA"]
+
+    b = table["B"]
+    s = table["S"]
+
+    # import ipdb; ipdb.set_trace()
+
+    S = interp(B, b, s)
+    
+    return S
+
+
+if __name__ == "__main__":
+    teste()

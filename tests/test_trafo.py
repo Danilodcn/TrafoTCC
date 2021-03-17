@@ -89,6 +89,14 @@ class TestTrafo(TestCase):
         for key, value in tests_variables.items():
             
             try:
+                if key in ["ZA", "Zb"]:
+                    if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel * 100000):
+                        not_pass[key] = [value, f"é diferente de {json_variables[key]}"]
+
+                    # import ipdb; ipdb.set_trace()
+                    
+                    continue
+
                 if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel):
                     not_pass[key] = [value, f"é diferente de {json_variables[key]}"]
             except:

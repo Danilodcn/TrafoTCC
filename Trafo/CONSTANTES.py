@@ -18,7 +18,9 @@ CONSTANTES_DADAS = {
     "V2": 1,        # Tensao no secundário [Kv]
     "tipo": "str",  # Tipo de refrigeração do transformador
     "Dfe": 1,       # Densidade do ferro em [Kg/m³]
-    "Dal": 1        # Densidade do alumínio em [Kg/m³]
+    "Dal": 1,       # Densidade do alumínio em [Kg/m³]
+    "Br": 1,        # Valores fornecido pelo usuário - Densidade remanescente
+    "Bs": 1,        # Valores fornecido pelo usuário - Densdidade na região saturada
 }
 
 TABELAS = {}

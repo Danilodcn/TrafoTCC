@@ -86,6 +86,11 @@ class Trafo(object):
         tipo = self.constantes.tipo
         Dfe = self.constantes.Dfe
         Dal = self.constantes.Dal
+        V1 = self.constantes.V1
+        V2 = self.constantes.V2
+        Bs = self.constantes.Bs
+        Br = self.constantes.Br
+
 
 
         # variaveis 
@@ -129,6 +134,9 @@ class Trafo(object):
         k = tabelas.tabela_2_5(tipo, numero_degraus)
         d = sqrt(Ac / k)
 
+        # x = (Ac * 4 / pi) ** .5 # TODO talvez vamos calcular d usando d como o diametro de Ac
+        # import ipdb; ipdb.set_trace()
+
         Kw = Ksw / (30 + Vf2)   #   TODO Kw deveria vir da tabela 2.1.
                                 # na equação 2.26 usa esse Kw e diz que ele é definido na tabela 2.1
 
@@ -142,7 +150,7 @@ class Trafo(object):
         D = ww + wc             # é a distância entre os centros de duas colunas [m]
         W = 2 * D + wc          # é a largura total do núcleo [m]
 
-        
+        # a = (d - wc) / 2
         # Estimativa da corrente de carga
         Abj = rel * Abc     # é a área bruta da culatra [mm²]
         Aj = rel * Ac       # é a área do jugo ou da culatra [mm²]
@@ -204,7 +212,7 @@ class Trafo(object):
         #dfc1 = sqrt(4 * Fc1 / pi)
         VALbt = Compbt1 * Fc1 * 3
 
-        Mbt3 = VALbt * Dal
+        Mbt3 = VALbt * Dal * 1e-9
         I2menor = (S / 3 / Vf2)     # corrente no secundário
 
         Vmedio2 = 12                # TODO pergutar ao professor se esse valor deve ser dado do usuário
@@ -218,10 +226,84 @@ class Trafo(object):
         tAT1 = SwindAT / hb * 1.1
         Laxju = hw - hw * Kw / 2
 
-        tAT2 = tAT1 * 2
+        # tAT2 = tAT1 * 2
 
+        dintAT = Dextbt + 6 * (d - wc) / 2
+        DextAT = dintAT + 4 * tAT1
+
+        LmATc = pi * (dintAT + DextAT) / 2              # Comprimento em milímetros
+        CompAT = LmATc * N2
+
+        dfc2 = sqrt(I2c / Jat * 4 / pi)
+        VALAT = CompAT * I2c / Jat * 3
+        MAT3 = VALAT * Dal * 1e-9
         
-        ##  TODO realizar os testes e calcular os pesos dos condutores de aluminio pg 
+        R1 = 0.02857 * Compbt1 / Fc1 * 1e-3     # Resistencia do combre no lado da baixa tesão
+        R2 = 0.02857 * CompAT / Fc2AT * 1e-3    # Resistencia do combre no lado da alta tesão
+
+        I2 = S / 3 / Vf2
+        Pj = (R1 * I1 ** 2 + R2 * I2 ** 2) * 3
+        R2ref = R2 * (N1 / N2) ** 2
+        VmL = V1 * 1000 * sqrt(2)
+        Fluxonominal2 = Vf1 * 1000 / (2 * pi * f) * sqrt(2)
+        VmAT = V2 * 1000 * sqrt(2)
+        FluxonominalAT = Vf2 * 1000 / (2 * pi * f) * sqrt(2)
+
+        Ac = Ac * 1e-6          # converte para m²
+
+        Fr = Ac * Br            # Fluxo em [Wb/m²]
+        Fs = Ac * Bs            # Fluxo em [Wb/m²]
+
+        VAc = tabelas.curva_VA(Bm)
+        VAj = tabelas.curva_VA(By)
+        S0 = VAc * Mc + VAj* Mj
+
+        Rm = Po / 3 / Io ** 2
+        Zm = Vf1 * 1000 / Io
+        Xm0 = sqrt(Zm ** 2 - Rm ** 2)
+        IoAT = Io * N1 / N2
+        RmAT = Po / 3 / IoAT ** 2
+        ZmAT = Vf2 * 1000 / IoAT
+        Xm0AT = sqrt(ZmAT ** 2 - RmAT ** 2)
+
+        Mo = 4 * pi * 1e-7   # 9Permeabilidade do ar
+        Wa = 2 * pi * f
+       
+        L = Mo * N1 ** 2 * So / (hb - 0.45 * dc)  # TODO buscar essa referencia. Indutancia: Hayt J.r,W.A Buck J.A 2013 - Eletromagnetismo
+        Xb = Wa * L / 1000
+
+        Zb = sqrt(R1 ** 2 + Xb ** 2)
+        ktrafo = Vf2 / Vf1
+        XA = Xb * ktrafo ** 2
+        ZA = sqrt(R2 ** 2 + XA ** 2)
+
+        Zccb = Zb + ZA / ktrafo ** 2
+        Ifb = S / 3 / Vf1
+        Vccb = Ifb * Zccb
+        Zp = Vccb / Vf1         #FIXME o professor errou. Multiplicou por 100 mas deveria multiplicar por 1000
+
+        IfA = S / 3 / Vf2
+
+        import ipdb; ipdb.set_trace()
+        #  TODO realizar os testes e calcular os pesos dos condutores de aluminio pg 
+        
+        teste = {
+            "L": L,
+            "Xb": Xb,
+            "Mo": Mo,
+            "Wa": Wa,
+            "ktrafo": ktrafo,
+            "Zb": Zb,
+            "ZA": ZA,
+            "XA": XA,
+            "R1": R1,
+            "R2": R2,
+            "Zccb": Zccb,
+            "Ifb": Ifb,
+            "Vccb": Vccb,
+            "Zp": Zp,
+            "IfA": IfA,
+        }
 
         para_teste = {
             "Et": Et,
@@ -273,10 +355,8 @@ class Trafo(object):
             "z": z,
             "hb": hb,
             "tbt1": tbt1,
-            "tbt2": tbt2
-        }
-        
-        para_teste.update({
+            "tbt2": tbt2,
+
             "Dextbt": Dextbt,
             "dmbt": dmbt,
             "Lmbt": Lmbt,
@@ -288,9 +368,43 @@ class Trafo(object):
             "Fc2AT": Fc2AT,
             "SwindAT": SwindAT,
             "dAt": dAt,
+            "I2menor": I2menor,
+            "dfc2AT":  dfc2AT,
+            "Laxju": Laxju,
+            # "tAT2": tAT2
 
+            "dintAT": dintAT,
+            "DextAT": DextAT,
+            "LmATc": LmATc,
+            "CompAT": CompAT,
+            "dfc2": dfc2,
+            "VALAT": VALAT,
+            "MAT3": MAT3,
+            "R1": R1,
+            "R2": R2,
+            "I2": I2,
+            "Pj": Pj,
 
-        })
+            "R2ref": R2ref,
+            "Fluxonominal2": Fluxonominal2,
+            "VmAT": VmAT,
+            "VmL": VmL,
+            "FluxonominalAT": FluxonominalAT,
+
+            "Fr": Fr,
+            "Fs": Fs,
+            "VAc": VAc,
+            "VAj": VAj,
+            "S0": S0,
+            "VAj": VAj,
+            "Rm": Rm,
+            "Xm0": Xm0,
+            "IoAT": IoAT,
+            "Xm0AT": Xm0AT,
+
+        }
+        
+        para_teste.update(teste)
         
         # para_teste = {
         #     "Pic": Pic,
