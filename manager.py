@@ -33,7 +33,7 @@ def tests():
 def teste(t, error):
     error /= 100
     config = {"n": t, "error": error}
-    dump(config, open("tests/json/config.json", "w"))
+    dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")
     testrunner = runner.TextTestRunner()

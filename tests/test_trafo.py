@@ -34,12 +34,11 @@ def erro_e_aceitavel(a: float, b: float, error: float) -> bool:
 class TestTrafo(TestCase):
    
     def setUp(self):
-        self.pathjson = "tests/json/"
-        self.config = load(open(self.pathjson + "config.json", "r"))
+        self.pathjson = "tests/json/trafo/"
+        self.config = load(open("tests/config.json", "r"))
         self.filename = "teste_{}.json".format(self.config["n"])
         self.error_aceitavel = self.config["error"]
         # import ipdb; ipdb.set_trace()
-
 
     def test_se_existe_json(self):
         "Testa se existe o arquivo JSON na pasta raiz do projeto"
@@ -53,14 +52,14 @@ class TestTrafo(TestCase):
         # from ipdb import set_trace; set_trace()
         
         try:
-            _trafo = trafo.Trafo(json_variables, json_variables)
+            _trafo = trafo.Trafo(json_variables)
         except Exception as err: 
             self.assertTrue(False, f"houve um erro na criação do objeto Trafo\nErro: {err}")
         # import ipdb; ipdb.set_trace()
     
     def test_calculo_de_dados_do_trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
-        _trafo = trafo.Trafo(json_variables, json_variables)
+        _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
         tests_variables = _trafo.resultado_calculos
         not_pass = {}
@@ -80,26 +79,41 @@ class TestTrafo(TestCase):
 
     def test_calculo_das_dimensoes_do_trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
-        _trafo = trafo.Trafo(json_variables, json_variables)
+        _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
-        _trafo.calculo_das_dimensoes_do_trafo()
+        variaveis = _trafo.inicia_as_variaveis(VARIAVEIS, json_variables)
+        _trafo.calculo_das_dimensoes_do_trafo(variaveis, debug=True)
+
+        # import ipdb; ipdb.set_trace()
 
         tests_variables = _trafo.resultado_calculos
         not_pass = {}
         for key, value in tests_variables.items():
             
             try:
-                if key in ["ZA", "Zb"]:
-                    if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel * 100000):
+                y = json_variables[key]
+
+                if key in []:
+                    if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel * 1000000):
                         not_pass[key] = [value, f"é diferente de {json_variables[key]}"]
+
+                    # import ipdb; ipdb.set_trace()
+                    
+                    continue
+                if key in []:
+                    if not erro_e_aceitavel(value, y, self.error_aceitavel * 20):
+                        r = abs((value - y) / value)
+                        not_pass[key] = [value, f"é diferente de {y}. Erro de {r * 100} %"]
 
                     # import ipdb; ipdb.set_trace()
                     
                     continue
 
                 if not erro_e_aceitavel(value, json_variables[key], self.error_aceitavel):
-                    not_pass[key] = [value, f"é diferente de {json_variables[key]}"]
+                    r = abs((value - y) / value)
+                    not_pass[key] = [value, f"é diferente de {y}. Erro de {r * 100} %"]
             except:
+                
                 not_pass[key] = [value, "não existe no JSON " + self.filename]
 
             if key == "atc":
@@ -118,7 +132,8 @@ class TestTrafo(TestCase):
 
     def test_resultado_calculos_a_partir_do_atributo_no_objeto_Trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
-        _trafo = trafo.Trafo(json_variables, json_variables)
+        _trafo = trafo.Trafo(json_variables)
+        _trafo.calculo_de_dados_do_trafo()
         tests_variables = _trafo.resultado_calculos
         not_pass = {}
         

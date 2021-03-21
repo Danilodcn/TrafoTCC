@@ -27,10 +27,11 @@ tabelas = {
             [0.974, 0.914, 0.841, 0.755, 0.654, 0.554, 0.404, 0.234], 
             [0.977, 0.929, 0.867, 0.798, 0.707, 0.608, 0.498, 0.37, 0.214]
             ]
-        }, 
+        },
+
     "2.5":{
-        "seco": [0.37, 0.46, 0.49, 0.525, 0.505], 
-        "oleo": [0.45, 0.56, 0.6, 0.62, 0.625]
+        'seco': [0.37, 0.46, 0.49, 0.525, 0.5374435665914221, 0.5469243792325056, 0.5534424379232505, 0.5581828442437923, 0.5617381489841986], 
+        'oleo': [0.45, 0.56, 0.6, 0.62, 0.6346952595936796, 0.6458916478555305, 0.6535891647855532, 0.6591873589164786, 0.6633860045146728]
     },
 
     "perda_magnetica": {
@@ -50,13 +51,25 @@ tabelas = {
 }
 
 def teste():
-    from matplotlib import  pyplot as plt
-    table = tabelas["2.5"]
-    x = table["oleo"]
-    y = range(1, len(x) + 1)
+    tabela = tabelas["2.5"]
+    
+    Ku = tabelas["2.4"]["Ku"]
+    for i in range(len(Ku)):
+        try:
+            tabela["seco"][i]
+        except :
+            # import ipdb; ipdb.set_trace()
+            b, a = Ku[i-1:i+1]
+            tabela["seco"].append(a * tabela["seco"][i-1] / b)
+            tabela["oleo"].append(a * tabela["oleo"][i-1] / b)
 
-    plt.plot(y, x)
-    plt.show()
+    
+    return tabela
+
+# teste()
+# import ipdb; ipdb.set_trace()
+
+
 
 def tabela_2_1(tipo: str, S: float, tensao: float) -> float:
     dados = tabelas["2.1"][tipo]
@@ -89,6 +102,7 @@ def tabela_2_3(area: float) -> int:
 
 
 def tabela_2_4(numero_degraus: int) -> list:
+    numero_degraus -= 1
     tabela = tabelas["2.4"]
     Ku = tabela["Ku"][numero_degraus]
     L = tabela["dimensoes_nucleo"][numero_degraus]
@@ -98,6 +112,7 @@ def tabela_2_4(numero_degraus: int) -> list:
 def tabela_2_5(tipo: str, numero_degraus: int) -> float:
     numero_degraus -= 1
     tabela = tabelas["2.5"]
+    Ku = tabelas["2.4"]["Ku"]
     if numero_degraus > 4:
         numero_degraus = 4
     try:

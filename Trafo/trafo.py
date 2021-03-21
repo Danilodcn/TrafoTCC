@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from math import sqrt, pi, cos, sin
 import numpy as np
 
@@ -21,23 +21,23 @@ class TrafoError(Exception): pass
 
 class Trafo(object):
 
-    def __init__(self, cons: Dict, variaveis: Dict) -> None:
-        self.variaveis = self.inicia_as_variaveis(VARIAVEIS, variaveis)
-        self.constantes = self.inicia_as_variaveis(CONSTANTES_DADAS, cons)
+    def __init__(self, constantes: Dict) -> None:
+        self.constantes = self.inicia_as_variaveis(CONSTANTES_DADAS, constantes)
         self.resultado_calculos = utils.QueryDict({})
 
         # self.calculo_de_dados_do_trafo() 
         # self.calculo_das_dimensoes_do_trafo()
     
     def __repr__(self):
-        txt = ", ".join([(f"{i} = {self.variaveis[i]}") for i in self.variaveis.keys()])
+        txt = ", ".join([(f"{i} = {self.constantes[i]}") for i in self.constantes.keys()])
         return f"Trafo ({txt})"
 
 
     @staticmethod
-    def inicia_as_variaveis(nomes: Dict, items: Dict) -> Dict:
+    def inicia_as_variaveis(nomes: Dict, items: [Dict]) -> Dict:
         # import ipdb; ipdb.set_trace()
         retorno = utils.QueryDict({})
+
         for nome in nomes.keys():
             try:
                 retorno[nome] = items[nome]
@@ -45,6 +45,12 @@ class Trafo(object):
                 raise KeyError(f'"Erro ao iniciar as variáveis: "{nome}" nao existe no dicionário "items" \n')
             except Exception as e:
                 raise ValueError(f"Erro desconhecido ocorrido na classse Trafo: {e}")
+        return retorno
+
+    
+    @staticmethod
+    def set_variaveis(variaveis: List):
+        retorno = [{i: j} for i, j in zip(VARIAVEIS.keys(), variaveis)]
         return retorno
 
     def calculo_de_dados_do_trafo(self):
@@ -66,18 +72,17 @@ class Trafo(object):
         }
         self.resultado_calculos.update(para_teste)
 
-    def get_variavel(self, item: str):
-        try:
-            return self.variaveis[item]
-        except:
-            try: 
-                return self.constantes[item]
-            except:
-                raise KeyError(f'A variável "{item}" nao existe')
 
+    def run(self, variaveis: dict, **kw) -> (float, float):
 
-    def calculo_das_dimensoes_do_trafo(self):
-        Vf1, Vf2 = self.resultado_calculos.Vf1,  self.resultado_calculos.Vf2
+        assert VARIAVEIS.keys() == variaveis.keys()
+
+        return self.calculo_das_dimensoes_do_trafo(variaveis)
+
+    
+    def calculo_das_dimensoes_do_trafo(self, variaveis: [dict, List], debug: bool = False):
+        Vf1 = self.resultado_calculos.Vf1
+        Vf2 = self.resultado_calculos.Vf2
         
         # constantes
         S = self.constantes.S
@@ -86,21 +91,18 @@ class Trafo(object):
         tipo = self.constantes.tipo
         Dfe = self.constantes.Dfe
         Dal = self.constantes.Dal
-        V1 = self.constantes.V1
-        V2 = self.constantes.V2
-        Bs = self.constantes.Bs
-        Br = self.constantes.Br
-
-
-
-        # variaveis 
-        Bm = self.variaveis.Bm
-        kt = self.variaveis.kt
-        Rjan = self.variaveis.Rjan
-        Ksw = self.variaveis.Ksw
-        Jbt = self.variaveis.Jbt
-        Jat = self.variaveis.Jat
-        rel = self.variaveis.rel
+        
+        # variaveis
+        try: 
+            Bm = variaveis["Bm"]
+            kt = variaveis["kt"]
+            Rjan = variaveis["Rjan"]
+            Ksw = variaveis["Ksw"]
+            Jbt = variaveis["Jbt"]
+            Jat = variaveis["Jat"]
+            rel = variaveis["rel"]
+        except: 
+            Jbt, Jat, Bm, Ksw, kt, Rjan, rel = variaveis
 
 
         Et = kt * sqrt(S) #  é a tensão eficaz por espiras [V/e]
@@ -113,7 +115,6 @@ class Trafo(object):
         numero_degraus = tabelas.tabela_2_3(Abc / 1000) # numero de degraus conforme a tabela 2.3 pg 44 tese
         Ku, LD = tabelas.tabela_2_4(numero_degraus)     # Dimensões do núcleo em função do número de degraus. pg 48 tese
         LD = np.asarray(LD, np.float64)                 # LD é um vetor que contem todos os valores existentes na tabela 2.4
-
 
         So = Abc / Ku                           # Seção circular circunscrita
         dc = 2 * sqrt(So / pi)                  #  é o diâmetro da coluna do núcleo
@@ -134,9 +135,9 @@ class Trafo(object):
         k = tabelas.tabela_2_5(tipo, numero_degraus)
         d = sqrt(Ac / k)
 
-        # x = (Ac * 4 / pi) ** .5 # TODO talvez vamos calcular d usando d como o diametro de Ac
         # import ipdb; ipdb.set_trace()
 
+        # x = (Ac * 4 / pi) ** .5 # TODO talvez vamos calcular d usando d como o diametro de Ac
         Kw = Ksw / (30 + Vf2)   #   TODO Kw deveria vir da tabela 2.1.
                                 # na equação 2.26 usa esse Kw e diz que ele é definido na tabela 2.1
 
@@ -158,7 +159,7 @@ class Trafo(object):
         By = Bm / rel       # densidade de fluxo no jugo (yoke)
                             # TODO entender o que é isso
 
-        H = hw + 2 * hy     # é a altura total do núcleo [m]
+        # H = hw + 2 * hy     # é a altura total do núcleo [m]
         Vferc = 3 * hw * Ac # Volume de ferro no núcleo [mm³]
         Bfe = Dfe * 1e-9    # Densidade do ferro em [Kg / mm³]
         Mc = Vferc * Bfe    # Massa da culatra  [Kg]
@@ -181,8 +182,7 @@ class Trafo(object):
         assert isinstance(Pij, int) or isinstance(Pij, float)
         Wij = Pij * Mj
         Po = (Wic + Wij) * 1.05     # Perdas totais do ferro no transformador. 
-                                    # As perdas totais é a soma da perda nas colunas 
-                                    # + as perdas nas culatras (culatras e guarnições)
+                                    # As perdas totais é a soma da perda nas colunas                          # + as perdas nas culatras (culatras e guarnições)
         Ip = Po/(3 * Vf1) * 1e-3    # Componente da corrente ativa Ip da perda no núcleo [A]
 
         atc = tabelas.curva_BH(Bm)
@@ -194,7 +194,7 @@ class Trafo(object):
         ATcj = ATc + ATj    # A força magnetomotriz total [Ae]
         Iq = ATcj / N1 * 1e-3 # N1 enrolamento do lado da BT conforme trafo WEG DE 150 KVA
 
-        Io = sqrt(Ip ** 2 + Iq ** 2) # A corrente a vazio [A]
+        # Io = sqrt(Ip ** 2 + Iq ** 2) # A corrente a vazio [A]
         # import ipdb; ipdb.set_trace()
 
         I1 = S / 3 / Vf1   # FIXME S é a potencia total do Trafo
@@ -213,18 +213,18 @@ class Trafo(object):
         VALbt = Compbt1 * Fc1 * 3
 
         Mbt3 = VALbt * Dal * 1e-9
-        I2menor = (S / 3 / Vf2)     # corrente no secundário
+        # I2menor = (S / 3 / Vf2)     # corrente no secundário
 
         Vmedio2 = 12                # TODO pergutar ao professor se esse valor deve ser dado do usuário
         I2c = S / 3 / Vmedio2       # tap intermediário para dimensionamento dos condutores
         
         Fc2AT = I2c / Jat           # área do condutor em mm2 no secundário
-        dfc2AT  = sqrt(Fc2AT * 4 / pi)  # Diametro do condutor em mm
+        # dfc2AT  = sqrt(Fc2AT * 4 / pi)  # Diametro do condutor em mm
         SwindAT = Fc2AT * N2            # Area referente a alta tensao
-        dAt = sqrt(SwindAT * 4 / pi)
+        # dAt = sqrt(SwindAT * 4 / pi)
 
         tAT1 = SwindAT / hb * 1.1
-        Laxju = hw - hw * Kw / 2
+        # Laxju = hw - hw * Kw / 2
 
         # tAT2 = tAT1 * 2
 
@@ -234,7 +234,7 @@ class Trafo(object):
         LmATc = pi * (dintAT + DextAT) / 2              # Comprimento em milímetros
         CompAT = LmATc * N2
 
-        dfc2 = sqrt(I2c / Jat * 4 / pi)
+        # dfc2 = sqrt(I2c / Jat * 4 / pi)
         VALAT = CompAT * I2c / Jat * 3
         MAT3 = VALAT * Dal * 1e-9
         
@@ -243,6 +243,106 @@ class Trafo(object):
 
         I2 = S / 3 / Vf2
         Pj = (R1 * I1 ** 2 + R2 * I2 ** 2) * 3
+        PerdasT = Po + Pj
+        Mativa = MAT3 + Mbt3 + MT
+        # import ipdb; ipdb.set_trace()
+        
+        if debug:
+            para_teste = {
+                "Et": Et,
+                "N1": N1,
+                "N2": N2,
+                "Ac": Ac,
+                "Abc": Abc,
+                "So": So,
+                "Ku": Ku,
+                "dc": dc,
+                "Prof": Prof,
+                "k": k,
+                "d": d,
+                "Kw": Kw,
+                "Aw": Aw,
+                "ww": ww,
+                "hw": hw,
+                "wc": wc,
+                "D": D,
+                "W": W,
+                "Abj": Abj,
+                "Aj": Aj,
+                "hy": hy,
+                "By": By,
+                "Vferc": Vferc,
+                "Bfe": Bfe,
+                "Mc": Mc,
+                # "H": H,
+                "Pic": Pic,
+                "Pij": Pij,
+                "Wic": Wic,
+                "Vferj": Vferj,
+                "Mj": Mj,
+                "MT": MT,
+                "Wij": Wij,
+                "Po": Po,
+                "Ip": Ip,
+                
+                "atc": atc,
+                "atj": atj,
+                "ATc": ATc,
+                "ATj": ATj,
+                "ATcj": ATcj,
+                "Iq": Iq,
+                # "Io": Io,
+                "I1": I1,
+                "Fc1": Fc1,
+                "Swind1": Swind1,
+                "z": z,
+                "hb": hb,
+                "tbt1": tbt1,
+                "tbt2": tbt2,
+
+                "Dextbt": Dextbt,
+                "dmbt": dmbt,
+                "Lmbt": Lmbt,
+                "Compbt1": Compbt1,
+                "VALbt": VALbt,
+                "Mbt3": Mbt3,
+                "I2c": I2c,
+                "Vmedio2": Vmedio2,
+                "Fc2AT": Fc2AT,
+                "SwindAT": SwindAT,
+                # "dAt": dAt,
+                # "I2menor": I2menor,
+                # "dfc2AT":  dfc2AT,
+                # "Laxju": Laxju,
+                # "tAT2": tAT2
+
+                "dintAT": dintAT,
+                "DextAT": DextAT,
+                "LmATc": LmATc,
+                "CompAT": CompAT,
+                # "dfc2": dfc2,
+                "VALAT": VALAT,
+                "MAT3": MAT3,
+                "R1": R1,
+                "R2": R2,
+                "I2": I2,
+                "Pj": Pj,
+                "PerdasT": PerdasT,
+                "Mativa": Mativa,                
+            }
+            
+            #para_teste.update(teste)
+            
+            # para_teste = {
+            #     "Pic": Pic,
+            # }
+            # import ipdb; ipdb.set_trace()
+
+            self.resultado_calculos.update(para_teste)
+        
+        return PerdasT, Mativa
+
+def faz_nada():
         R2ref = R2 * (N1 / N2) ** 2
         VmL = V1 * 1000 * sqrt(2)
         Fluxonominal2 = Vf1 * 1000 / (2 * pi * f) * sqrt(2)
@@ -273,6 +373,7 @@ class Trafo(object):
         Xb = Wa * L / 1000
 
         Zb = sqrt(R1 ** 2 + Xb ** 2)
+        
         ktrafo = Vf2 / Vf1
         XA = Xb * ktrafo ** 2
         ZA = sqrt(R2 ** 2 + XA ** 2)
@@ -280,13 +381,19 @@ class Trafo(object):
         Zccb = Zb + ZA / ktrafo ** 2
         Ifb = S / 3 / Vf1
         Vccb = Ifb * Zccb
-        Zp = Vccb / Vf1         #FIXME o professor errou. Multiplicou por 100 mas deveria multiplicar por 1000
+        
+        Zp = Vccb / Vf1 /1000 * 100
 
         IfA = S / 3 / Vf2
 
+        ZbaseA = V2 ** 2 * 3 * 1000 / S
+
+        ZA = ZbaseA * Zp / 100 / 2
+        XA = sqrt(ZA ** 2 - R2 ** 2)
         import ipdb; ipdb.set_trace()
         #  TODO realizar os testes e calcular os pesos dos condutores de aluminio pg 
         
+
         teste = {
             "L": L,
             "Xb": Xb,
@@ -303,6 +410,7 @@ class Trafo(object):
             "Vccb": Vccb,
             "Zp": Zp,
             "IfA": IfA,
+            "ZbaseA": ZbaseA,
         }
 
         para_teste = {
