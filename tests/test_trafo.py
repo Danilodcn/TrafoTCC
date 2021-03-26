@@ -82,7 +82,7 @@ class TestTrafo(TestCase):
         _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
         variaveis = _trafo.inicia_as_variaveis(VARIAVEIS, json_variables)
-        _trafo.calculo_das_dimensoes_do_trafo(variaveis, debug=True)
+        _trafo.calculo_das_perdas_do_trafo(variaveis, debug=True)
 
         # import ipdb; ipdb.set_trace()
 

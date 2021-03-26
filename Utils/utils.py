@@ -15,3 +15,6 @@ class QueryDict(dict):
     def __setatt__(self, attr, value):
         print(f"setei aqui: {attr} = {value}")
         self.__setitem__(attr, value)
+
+    def __dir__(self):
+        return self.keys()

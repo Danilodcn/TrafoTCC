@@ -77,10 +77,10 @@ class Trafo(object):
 
         assert VARIAVEIS.keys() == variaveis.keys()
 
-        return self.calculo_das_dimensoes_do_trafo(variaveis)
+        return self.calculo_das_perdas_do_trafo(variaveis)
 
     
-    def calculo_das_dimensoes_do_trafo(self, variaveis: [dict, List], debug: bool = False):
+    def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], debug: bool = False):
         Vf1 = self.resultado_calculos.Vf1
         Vf2 = self.resultado_calculos.Vf2
         
