@@ -11,6 +11,7 @@ ipdb = "*"
 ipython = "*"
 pytest = "*"
 click = "*"
+pysimplegui = "*"
 
 [dev-packages]
 
