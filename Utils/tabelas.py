@@ -78,10 +78,10 @@ def tabela_2_1(tipo: str, S: float, tensao: float) -> float:
     if 0 < S <= 10: return dados[0] * valor
     if 10 < S <= 250: return dados[1] * valor
     if S > 250: return dados[2] * valor
-    else: raise ValueError("Houve um erro ao executar essa fução")
+    else: raise ValueError("Houve um erro ao executar essa função")
 
 def tabela_2_3(area: float) -> int:
-    """paramentros:
+    """parâmetros:
         area: float     # em m²
         retorna: int    # numero de degraus entre 1 e 7 
     """
@@ -124,7 +124,7 @@ def tabela_2_5(tipo: str, numero_degraus: int) -> float:
 
 
 def perda_magnetica_do_nucleo(Bm: float) -> float:
-    # Essa função vai realizar a inporlação usando método numpy.interp
+    # Essa função vai realizar a interpolação usando método numpy.interp
     # TODO Realizar os testes nas saidas, pois na linha 156 do código MATLAB ocorre um erro.
     # Quando executo a saída é null (not a number)
     b = tabelas["perda_magnetica"]["inducao"]

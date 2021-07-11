@@ -16,8 +16,6 @@ def tests():
     testrunner = runner.TextTestRunner()
     testrunner.run(test)
 
-
-
 @c.command()
 @click.option(
     "-t", 
@@ -32,13 +30,23 @@ def tests():
     type=float,
     help='Para todos os os testes aceita esse erro em %'
     )
-def teste(t, error):
-    error /= 100
+@click.option(
+    "-v", "--verbose",
+    required=False,
+    is_flag=True,
+    help="Modo verboso",
+)
+def teste(t, error, verbose):
+    """
+        Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
+    """
+    error /= 100            # TODO ola mundo, isso
     config = {"n": t, "error": error}
     dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")
-    testrunner = runner.TextTestRunner()
+    verbose = 2 if verbose else 1
+    testrunner = runner.TextTestRunner(verbosity=verbose)
     testrunner.run(test)
 
 

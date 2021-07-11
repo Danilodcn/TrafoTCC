@@ -44,7 +44,7 @@ class Trafo(object):
             except KeyError as e:
                 raise KeyError(f'"Erro ao iniciar as variáveis: "{nome}" nao existe no dicionário "items" \n')
             except Exception as e:
-                raise ValueError(f"Erro desconhecido ocorrido na classse Trafo: {e}")
+                raise ValueError(f"Erro desconhecido ocorrido na classe Trafo: {e}")
         return retorno
 
     
@@ -168,7 +168,7 @@ class Trafo(object):
         #TODO realizar os testes a partir daqui
         
         Pic = tabelas.perda_magnetica_do_nucleo(Bm) #Perda magnética [W/Kg]
-        # FIXME Bm nao pode ser superiror a 1.85, caso contrario a interpolação resultará em null
+        # FIXME Bm nao pode ser superior a 1.85, caso contrario a interpolação resultará em null
         
         assert isinstance(Pic, int) or isinstance(Pic, float) 
 
@@ -526,7 +526,9 @@ if __name__ == "__main__":
     from time import time
 
     t0 = time()
-    trafo = Trafo(x, x)
-    trafo.calculo_de_dados_do_trafo()
-    trafo.calculo_das_dimensoes_do_trafo()
-    print(time() - t0)
+    t1 = Trafo(x)
+    t2 = Trafo(x)
+    
+    
+    print(t1)
+

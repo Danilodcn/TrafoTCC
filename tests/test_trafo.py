@@ -138,8 +138,8 @@ class TestTrafo(TestCase):
         not_pass = {}
         
         for key, value in tests_variables.items():
-            sucess = value == json_variables[key]
-            if not sucess: 
+            sucesso = value == json_variables[key]
+            if not sucesso: 
                 not_pass[key] = [value, json_variables[key]]
 
         msg = print_dict(not_pass, " != ")
