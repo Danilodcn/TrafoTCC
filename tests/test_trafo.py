@@ -15,20 +15,10 @@ except Exception as e:
 CONSTANTES_DADAS = CONSTANTES.CONSTANTES_DADAS 
 VARIAVEIS = CONSTANTES.VARIAVEIS
 
-
-def print_dict(dicionario: dict[float, float], simbolo: str = "-") -> str:
-    lista = []
-    for key, value in dicionario.items():
-        txt = str(key) + " = " + f"{simbolo} ".join(map(str, value))
-        lista.append(txt)
-    
-    return ", ".join(lista)
-
-def erro_e_aceitavel(a: float, b: float, error: float) -> bool:
-    if a == 0:
-        if b == 0: return True
-        else: return False
-    return abs((a - b) / a) <= error 
+try:
+    from .utils import erro_e_aceitavel, print_dict
+except:
+    from utils import erro_e_aceitavel, print_dict
 
 
 class TestTrafo(TestCase):

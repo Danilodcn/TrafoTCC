@@ -40,6 +40,8 @@ def teste(t, error, verbose):
     """
         Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
     """
+    
+    print("=" * 100)
     error /= 100            # TODO ola mundo, isso
     config = {"n": t, "error": error}
     dump(config, open("tests/config.json", "w"))

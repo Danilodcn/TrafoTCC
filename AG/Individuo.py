@@ -2,12 +2,13 @@ import numpy.random as rd
 
 try:
     from Trafo.trafo import Trafo
-    from Trafo.CONSTANTES import VARIAVEIS
+    from Trafo.CONSTANTES import VARIAVEIS, CONSTANTES_DADAS, VARIACOES
 except:
     from .Trafo import trafo as Trafo
 
 
 class Individuo:
+    trafo = Trafo(CONSTANTES_DADAS)
     def __init__(self, variaveis: dict=None, variacoes: dict=None):
         texto = 'O argumento "variaveis" ou "variacoes" deve ser um dicionário válido'
         texto += f": variaveis >> {variaveis}; variacoes >> {variacoes}"
@@ -28,7 +29,17 @@ class Individuo:
         variaveis = [rd.uniform(i, j) for i, j in variacoes.values()]
         return dict(zip(variacoes.keys(), variaveis))
 
+    def calcula_objetivo(self):
+        return Individuo.trafo.run(self.variaveis)
 
+    @staticmethod
+    def set_constantes_trafo(constantes: dict):
+        dados = Individuo.trafo.inicia_as_variaveis(CONSTANTES_DADAS, constantes)
+        Individuo.trafo.constantes = dados
+        Individuo.trafo.calculo_de_dados_do_trafo()
+    
+
+"""
 VARIACOES = {
             "Jbt": (1.2, 1.4),
             "Jat": (1.4, 1.6),
@@ -39,6 +50,7 @@ VARIACOES = {
             "rel": (1.1, 1.2),
             }
 # i = Individuo(variacoes=VARIACOES)
-# import ipdb; ipdb.set_trace()
+# import ipdb; ipdb.set_trace()"""
 
 
+#import ipdb; ipdb.set_trace()

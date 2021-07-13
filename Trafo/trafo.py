@@ -33,8 +33,7 @@ class Trafo(object):
         return f"Trafo ({txt})"
 
 
-    @staticmethod
-    def inicia_as_variaveis(nomes: Dict, items: [Dict]) -> Dict:
+    def inicia_as_variaveis(self, nomes: Dict, items: [Dict]) -> Dict:
         # import ipdb; ipdb.set_trace()
         retorno = utils.QueryDict({})
 
@@ -72,14 +71,13 @@ class Trafo(object):
         }
         self.resultado_calculos.update(para_teste)
 
-
     def run(self, variaveis: dict, **kw) -> (float, float):
-
+        # import ipdb; ipdb.set_trace()
         assert VARIAVEIS.keys() == variaveis.keys()
 
         return self.calculo_das_perdas_do_trafo(variaveis)
 
-    
+
     def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], debug: bool = False):
         Vf1 = self.resultado_calculos.Vf1
         Vf2 = self.resultado_calculos.Vf2
