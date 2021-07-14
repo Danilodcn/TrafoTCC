@@ -23,14 +23,16 @@ class Individuo:
 
     def __repr__(self):
         lst = [f"{key} = {round(value, 3)}" for key, value in self.variaveis.items()]
-        return ", ".join(lst)
+        a_imprimir = ", ".join(lst)
+        return f"Individuo ({a_imprimir})"
 
     def _gera_variaveis_aleatoriamente(self, variacoes: dict):
         variaveis = [rd.uniform(i, j) for i, j in variacoes.values()]
         return dict(zip(variacoes.keys(), variaveis))
 
     def calcula_objetivo(self):
-        return Individuo.trafo.run(self.variaveis)
+        self.objetivos = Individuo.trafo.run(self.variaveis)
+        return self.objetivos
 
     @staticmethod
     def set_constantes_trafo(constantes: dict):

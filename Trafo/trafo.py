@@ -180,7 +180,8 @@ class Trafo(object):
         assert isinstance(Pij, int) or isinstance(Pij, float)
         Wij = Pij * Mj
         Po = (Wic + Wij) * 1.05     # Perdas totais do ferro no transformador. 
-                                    # As perdas totais é a soma da perda nas colunas                          # + as perdas nas culatras (culatras e guarnições)
+                                    # As perdas totais é a soma da perda nas colunas 
+                                    # + as perdas nas culatras (culatras e guarnições)
         Ip = Po/(3 * Vf1) * 1e-3    # Componente da corrente ativa Ip da perda no núcleo [A]
 
         atc = tabelas.curva_BH(Bm)
@@ -189,8 +190,8 @@ class Trafo(object):
         ATj = 2 * W * atj   # A força magnetomotriz na culatra [Ae]
         ATc = 3 * hw * atc  # A força magnetomotriz na coluna [Ae]
 
-        ATcj = ATc + ATj    # A força magnetomotriz total [Ae]
-        Iq = ATcj / N1 * 1e-3 # N1 enrolamento do lado da BT conforme trafo WEG DE 150 KVA
+        ATcj = ATc + ATj        # A força magnetomotriz total [Ae]
+        Iq = ATcj / N1 * 1e-3   # N1 enrolamento do lado da BT conforme trafo WEG DE 150 KVA
 
         # Io = sqrt(Ip ** 2 + Iq ** 2) # A corrente a vazio [A]
         # import ipdb; ipdb.set_trace()
@@ -236,8 +237,8 @@ class Trafo(object):
         VALAT = CompAT * I2c / Jat * 3
         MAT3 = VALAT * Dal * 1e-9
         
-        R1 = 0.02857 * Compbt1 / Fc1 * 1e-3     # Resistencia do combre no lado da baixa tesão
-        R2 = 0.02857 * CompAT / Fc2AT * 1e-3    # Resistencia do combre no lado da alta tesão
+        R1 = 0.02857 * Compbt1 / Fc1 * 1e-3     # Resistencia do cobre no lado da baixa tesão
+        R2 = 0.02857 * CompAT / Fc2AT * 1e-3    # Resistencia do cobre no lado da alta tesão
 
         I2 = S / 3 / Vf2
         Pj = (R1 * I1 ** 2 + R2 * I2 ** 2) * 3
@@ -338,7 +339,7 @@ class Trafo(object):
 
             self.resultado_calculos.update(para_teste)
         
-        return PerdasT, Mativa
+        return np.array([PerdasT, Mativa], dtype=np.float64)
 
 def faz_nada():
         R2ref = R2 * (N1 / N2) ** 2
@@ -367,7 +368,7 @@ def faz_nada():
         Mo = 4 * pi * 1e-7   # 9Permeabilidade do ar
         Wa = 2 * pi * f
        
-        L = Mo * N1 ** 2 * So / (hb - 0.45 * dc)  # TODO buscar essa referencia. Indutancia: Hayt J.r,W.A Buck J.A 2013 - Eletromagnetismo
+        L = Mo * N1 ** 2 * So / (hb - 0.45 * dc)  # TODO buscar essa referencia. Indutância: Hayt J.r,W.A Buck J.A 2013 - Eletromagnetismo
         Xb = Wa * L / 1000
 
         Zb = sqrt(R1 ** 2 + Xb ** 2)
@@ -389,7 +390,7 @@ def faz_nada():
         ZA = ZbaseA * Zp / 100 / 2
         XA = sqrt(ZA ** 2 - R2 ** 2)
         import ipdb; ipdb.set_trace()
-        #  TODO realizar os testes e calcular os pesos dos condutores de aluminio pg 
+        #  TODO realizar os testes e calcular os pesos dos condutores de alumínio pg 
         
 
         teste = {

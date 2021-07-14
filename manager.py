@@ -28,7 +28,13 @@ def tests():
     "-error", 
     required=True, 
     type=float,
-    help='Para todos os os testes aceita esse erro em %'
+    help='Erro máximo aceitável para os testes em %'
+    )
+@click.option(
+    "-npop", 
+    required=False, 
+    type=int,
+    help='Número de indivíduos na população'
     )
 @click.option(
     "-v", "--verbose",
@@ -36,14 +42,14 @@ def tests():
     is_flag=True,
     help="Modo verboso",
 )
-def teste(t, error, verbose):
+def teste(t, error, verbose, npop):
     """
         Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
     """
     
     print("=" * 100)
     error /= 100            # TODO ola mundo, isso
-    config = {"n": t, "error": error}
+    config = {"n": t, "error": error, "npop": npop}
     dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")

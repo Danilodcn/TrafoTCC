@@ -12,6 +12,7 @@ ipython = "*"
 pytest = "*"
 click = "*"
 pysimplegui = "*"
+scipy = "*"
 
 [dev-packages]
 pylint = "*"
