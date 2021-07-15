@@ -24,13 +24,12 @@ def create_suproblem(n_obj, n_pop, T):
     """
 
 
-
 class Populacao(object):
     def __init__(self, numero_populacao: int, individuos: list=None, variacoes=None):
         #import ipdb; ipdb.set_trace()
         try: 
             self.numero_populacao = int(numero_populacao)
-
+            
             if isinstance(individuos, list) and len(individuos) > 0:
                 self.individuos = individuos
             elif isinstance(variacoes, dict) and individuos == None:

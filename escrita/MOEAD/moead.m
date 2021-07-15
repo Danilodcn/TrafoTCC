@@ -40,7 +40,7 @@ nObj=numel(nTemp);
 
 %% MOEA/D Settings
 
-MaxIt=50;  % Maximum Number of Iterations
+MaxIt=10;  % Maximum Number of Iterations
 
 nPop=60 ;   % Population Size (Number of Sub-Problems)
 
