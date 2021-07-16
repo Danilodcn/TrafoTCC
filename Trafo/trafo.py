@@ -73,10 +73,9 @@ class Trafo(object):
 
     def run(self, variaveis: dict, **kw) -> (float, float):
         # import ipdb; ipdb.set_trace()
-        assert VARIAVEIS.keys() == variaveis.keys()
+        # assert VARIAVEIS.keys() == variaveis.keys()
 
         return self.calculo_das_perdas_do_trafo(variaveis)
-
 
     def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], debug: bool = False):
         Vf1 = self.resultado_calculos.Vf1
@@ -92,22 +91,21 @@ class Trafo(object):
         
         # variaveis
         try: 
-            Bm = variaveis["Bm"]
-            kt = variaveis["kt"]
-            Rjan = variaveis["Rjan"]
-            Ksw = variaveis["Ksw"]
             Jbt = variaveis["Jbt"]
             Jat = variaveis["Jat"]
+            Bm = variaveis["Bm"]
+            Ksw = variaveis["Ksw"]
+            kt = variaveis["kt"]
+            Rjan = variaveis["Rjan"]
             rel = variaveis["rel"]
         except: 
+            # import ipdb; ipdb.set_trace()
             Jbt, Jat, Bm, Ksw, kt, Rjan, rel = variaveis
-
 
         Et = kt * sqrt(S) #  é a tensão eficaz por espiras [V/e]
         N1 = (Vf1 * 1000) / Et
         N2 = (Vf2 * 1000) / Et
         
-
         Ac = Et / (4.44 * f * Bm) * 1e6         # é a área efetiva da coluna  [mm2]
         Abc = Ac / Ke                           #  é a área bruta da coluna [mm2]
         numero_degraus = tabelas.tabela_2_3(Abc / 1000) # numero de degraus conforme a tabela 2.3 pg 44 tese
@@ -170,7 +168,6 @@ class Trafo(object):
         
         assert isinstance(Pic, int) or isinstance(Pic, float) 
 
-        
         Wic = Pic * Mc          # perda específica no núcleo [W]
         Vferj = Aj * W * 2      # é o volume do ferro nas culatras
         Mj = Vferj * Bfe

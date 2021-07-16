@@ -20,7 +20,7 @@ except:
     from utils import erro_e_aceitavel, print_dict
 
 
-class Teste_AG_População(TestCase):
+class Teste_AG_Cria_População(TestCase):
     def setUp(self):
         self.pathjson = "tests/json/AG/"
         self.config = load(open("tests/config.json", "r"))
@@ -40,7 +40,7 @@ class Teste_AG_População(TestCase):
             self.assertTrue(False, msg=texto_erro)
 
 
-class Teste_AG_Subproblema(TestCase):
+class Teste_AG_População(TestCase):
     def setUp(self):
         self.pathjson = "tests/json/AG/"
         self.config = load(open("tests/config.json", "r"))
@@ -50,6 +50,26 @@ class Teste_AG_Subproblema(TestCase):
         self.variaveis = dict(zip(VARIACOES.keys(), variaveis))
         self.erro_aceitavel = self.config["error"]
         self.numero_populacao = self.config["npop"]
+    
+    def teste_calculo_de_todos_os_objetivos_dos_individuos_na_população(self):
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        objetivos = populacao.calcular_objetivos()
+        self.assertIsNotNone(objetivos)
 
-    def teste(self):
-        pass
+    def teste_plotagem_de_todos_os_objetivos_dos_individuos_na_população(self):
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        plotar = self.config["grafico"]
+        if plotar:
+            populacao.gerar_grafico(separado=True, debug=3)
+        else:
+            print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
+    
+    def teste_plotagem_das_frentes_de_pareto_nos_individuos_na_população(self):
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        plotar = self.config["grafico"]
+        # plotar = True
+        if plotar:
+            populacao.gerar_grafico(separado=True, debug=3)
+        else:
+            print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
+            

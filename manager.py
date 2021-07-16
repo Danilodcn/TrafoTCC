@@ -42,14 +42,20 @@ def tests():
     is_flag=True,
     help="Modo verboso",
 )
-def teste(t, error, verbose, npop):
+@click.option(
+    "-g", "grafico",
+    required=False,
+    is_flag=True,
+    help="mostrar testes com gráficos"
+)
+def teste(t, error, verbose, npop, grafico):
     """
         Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
     """
     
-    print("=" * 100)
+    print("-.-." * 25)
     error /= 100            # TODO ola mundo, isso
-    config = {"n": t, "error": error, "npop": npop}
+    config = {"n": t, "error": error, "npop": npop, "grafico": grafico}
     dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")

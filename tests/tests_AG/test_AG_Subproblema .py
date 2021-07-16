@@ -31,5 +31,5 @@ class Teste_AG_Subproblema(TestCase):
         self.erro_aceitavel = self.config["error"]
         self.numero_populacao = self.config["npop"]
 
-    def teste(self):
+    def __teste(self):
         pass

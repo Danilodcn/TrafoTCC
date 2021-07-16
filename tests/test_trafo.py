@@ -30,13 +30,13 @@ class TestTrafo(TestCase):
         self.error_aceitavel = self.config["error"]
         # import ipdb; ipdb.set_trace()
 
-    def test_se_existe_json(self):
+    def teste_se_existe_json(self):
         "Testa se existe o arquivo JSON na pasta raiz do projeto"
         dirs = os.listdir(self.pathjson)
         #import ipdb; ipdb.set_trace()
         self.assertIn(self.filename, dirs, "Nao existe o objeto JSON")
         
-    def test_se_json_de_teste_tem_todas_as_variaveis_nescessarias(self):
+    def teste_se_json_de_teste_tem_todas_as_variaveis_nescessarias(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
         
         # from ipdb import set_trace; set_trace()
@@ -47,7 +47,7 @@ class TestTrafo(TestCase):
             self.assertTrue(False, f"houve um erro na criação do objeto Trafo\nErro: {err}")
         # import ipdb; ipdb.set_trace()
     
-    def test_calculo_de_dados_do_trafo(self):
+    def teste_calculo_de_dados_do_trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
         _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
@@ -67,7 +67,7 @@ class TestTrafo(TestCase):
         self.assertDictEqual(not_pass, {}, txt)
 
 
-    def test_calculo_das_dimensoes_do_trafo(self):
+    def teste_calculo_das_dimensoes_do_trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
         _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
@@ -115,12 +115,10 @@ class TestTrafo(TestCase):
         txt += "Os erros foram: [{}]".format(msg)
         
         # import ipdb; ipdb.set_trace()
-        self.assertDictEqual(not_pass, {}, txt)
-   
-                        
+        self.assertDictEqual(not_pass, {}, txt)         
 
 
-    def test_resultado_calculos_a_partir_do_atributo_no_objeto_Trafo(self):
+    def teste_resultado_calculos_a_partir_do_atributo_no_objeto_Trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
         _trafo = trafo.Trafo(json_variables)
         _trafo.calculo_de_dados_do_trafo()
