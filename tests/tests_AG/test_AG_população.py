@@ -1,6 +1,7 @@
 import os
 from json import load
 from unittest import TestCase
+from matplotlib import pyplot as plt
 
 try:
     from AG.Populacao import Populacao
@@ -18,8 +19,7 @@ try:
     from .utils import erro_e_aceitavel, print_dict
 except:
     from utils import erro_e_aceitavel, print_dict
-
-
+    
 class Teste_AG_Cria_População(TestCase):
     def setUp(self):
         self.pathjson = "tests/json/AG/"
@@ -60,7 +60,8 @@ class Teste_AG_População(TestCase):
         populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
         plotar = self.config["grafico"]
         if plotar:
-            populacao.gerar_grafico(separado=True, debug=3)
+            populacao.gerar_grafico(separado=True, debug=3, titulo="")
+            plt.show()
         else:
             print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
     
@@ -69,7 +70,52 @@ class Teste_AG_População(TestCase):
         plotar = self.config["grafico"]
         # plotar = True
         if plotar:
-            populacao.gerar_grafico(separado=True, debug=3)
+            populacao.gerar_grafico(separado=True, debug=3, titulo="Frentes de Pareto Individuais da População")
+            plt.show()
         else:
             print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
+   
+    def teste_mutação_dos_individuos(self):
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+
+        fig, ax = plt.subplots()
+        grafico = self.config["grafico"]
+        # grafico = True
+        if grafico:
+            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES Mutação", fig=fig, ax=ax, geracao=1, color="red")
+            pass
+        populacao.mutacao(qtd=20, taxa=.4)
+        if grafico:
+            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES e DEPOIS Mutação",  fig=fig, ax=ax, geracao=2, color="blue")
+        
+            plt.show()
+        else:
+            print(f"O teste 'Mutação dos Individuos' rodou sem executar a plotagem")
+        
+        
+    def teste_crossover_dos_individuos(self):
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+
+        fig, ax = plt.subplots()
+        grafico = self.config["grafico"]
+        grafico = True
+        if grafico:
+            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES", fig=fig, ax=ax, geracao=1, color="red")
+        qtd, qtd2 = 10, 10
+        populacao.crossover(qtd_heuristico=qtd, qtd_aritmetico=qtd2)
+        
+        if grafico:
+            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES e DEPOIS do crossover",  fig=fig, ax=ax, geracao=2, color="blue")
+        
+            plt.show()
+        else:
+            print(f"O teste 'Mutação dos Individuos' rodou sem executar a plotagem")
+        
+        # plotar = self.config["grafico"]
+        # # plotar = True
+        # if plotar:
+        #     populacao.gerar_grafico(separado=True, debug=3)
+        # else:
+        #     print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
+            
             

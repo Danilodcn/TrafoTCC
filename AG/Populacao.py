@@ -1,5 +1,6 @@
-import math
-from itertools import zip_longest
+import math, random
+import itertools as it
+from collections.abc import Iterator, Iterable
 import numpy.random as rd
 import numpy as np
 from matplotlib import pyplot as plt
@@ -15,7 +16,13 @@ try:
 except:
     from Individuo import Individuo
 try:
-    from AG.funcoes import calcular_objetivo, verifica_dominancia, e_dominado
+    from AG.funcoes import (
+            calcular_objetivo, 
+            verifica_dominancia, 
+            e_dominado, 
+            distribui_argumentos, 
+            distribui_argumentos_passando_tupla
+        ) 
 except:
     from funcoes import calcular_objetivo, verifica_dominancia, e_dominado
 
@@ -72,7 +79,7 @@ class Populacao(object):
     def length(self):
         return len(self.individuos)
     
-    def gerar_grafico(self, separado=False, debug=0):
+    def gerar_grafico(self, separado=False, debug=0, titulo="", fig=None, ax=None, geracao=1, color="red"):
         """
             @param:
                 debug: 
@@ -80,9 +87,11 @@ class Populacao(object):
                     1: respectivo numero do individuo na população
                     2: Número com a posição do indivíduo no gráfico
                     3: numero da curva de pareto
+                    4: TODO
         """
-        fig, ax = plt.subplots()
-        plt.title("Gráfico dos objetivos dos individuos na população")
+        if fig is None or ax is None:
+            fig, ax = plt.subplots()
+        plt.title(titulo)
         plt.xlabel("Massa Total [Kg]")
         plt.ylabel("Perda  Total [W]")
         plt.grid(True)
@@ -92,35 +101,49 @@ class Populacao(object):
         else: 
             vetores = self.separa_dominantes()
         
+        cor = None
         for j, individuos in vetores.items():
             perdas, massas = self.calcular_objetivos(individuos)
             # plt.plot(massas, perdas, leg)
             # input(i)
             if debug:
                 for i in range(len(individuos)):
-                    titulo = "Trafos"
+                    label = "Trafos"
                     x, y = massas[i], perdas[i]
-                    if debug == 2:
-                        txt = "{}[{}, {}]".format(i + 1, round(x, 2), round(y, 2))
-                    elif debug == 1:
+                    y *= random.triangular(0.999, 1.001)
+                    x *= random.triangular(0.999, 1.001)
+                    
+                    if debug == 1:
                         txt = str(i + 1)
+                    elif debug == 2:
+                        txt = "{}[{}, {}]".format(i + 1, round(x, 2), round(y, 2))
                     elif debug == 3:
                         txt = str(j)
-                        titulo += f" para frente de pareto {j}"
+                        label += f"{j} {titulo}"
+                    elif debug == 4:
+                        txt = str(geracao)
+                        cor = color
+                        label = f"Geração {geracao}"
                         
                     ax.annotate(txt, (x, y))
             
-            ax.scatter(massas, perdas, label=f"{titulo}")
+            ax.scatter(massas, perdas, label=f"{label}", color=cor)
         
         plt.legend()
-        plt.show()
-    
-    def separa_dominantes(self):
+        # print(len(self.individuos))
+        # plt.show()
+        # import ipdb; ipdb.set_trace()
+        
+    def separa_dominantes(self, individuos: list=None):
         vetores = {}
-        dominados = self.individuos.copy()
+        
+        if individuos == None:
+            individuos = self.individuos.copy()
+                    
+        # input(len(dominados))
         n = 1
-        while len(dominados) > 0:
-            dominantes,  dominados = self.retira_dominantes(dominados)
+        while len(individuos) > 0:
+            dominantes,  individuos = self.retira_dominantes(individuos)
             vetores[n] = dominantes
             n += 1
             # print(len(dominantes), len(dominados))
@@ -129,9 +152,11 @@ class Populacao(object):
         # import ipdb; ipdb.set_trace()
         return vetores
         
-    def retira_dominantes(self, individuos: list):
+    def retira_dominantes(self, individuos: Iterator):
         # print("inicio: ", len(individuos))
-        n_individuos = len(individuos)
+        # import ipdb; ipdb.set_trace()
+        
+        # n_individuos = len(individuos)
         # dominancia = [True] * n_individuos
         dominantes = []
         dominados = []
@@ -168,3 +193,61 @@ class Populacao(object):
 
     def get_individuo(self, n):
         return self.individuos[n]
+    
+    def selecao(self, numero):
+        return rd.choice(self.individuos, numero)
+
+    def mutacao(self, qtd, taxa):
+        para_mutacao = rd.choice(self.individuos, qtd)
+        taxa = [taxa] * len(para_mutacao)
+        depois_mutacao = list(
+            map(
+                distribui_argumentos, 
+                it.zip_longest([], para_mutacao, taxa, fillvalue=Individuo.mutacao_uniforme)
+            )
+        )
+        
+        vetores = self.separa_dominantes(depois_mutacao + self.individuos)
+        n, self.individuos = 0, []
+        valores = iter(vetores.items())
+        while n <= self.numero_populacao:
+            try: 
+                _, valor = next(valores)
+            except StopIteration:
+                break
+            
+            n += len(valor)
+            self.individuos += valor
+            # import ipdb; ipdb.set_trace()
+        
+    def crossover(self, qtd_heuristico, qtd_aritmetico):
+        #Crossover Heuristico
+        para_heuristico = rd.choice(self.individuos, qtd_heuristico)
+        iter_para_heuristico = it.permutations(para_heuristico, 2)
+        
+        depois_crossover_heuristico = list(
+            map(
+                distribui_argumentos_passando_tupla,
+                it.zip_longest([], iter_para_heuristico, fillvalue=Individuo.crossover_heuristico)
+            )
+        )
+        
+        # import ipdb; ipdb.set_trace()       
+        #Crossover Aritmético
+        para_aritmetico = rd.choice(self.individuos, qtd_aritmetico)
+        iter_para_aritmetico = it.permutations(para_aritmetico, 2)
+        
+        depois_crossover_aritmetico = list(
+            map(
+                distribui_argumentos_passando_tupla,
+                it.zip_longest([], iter_para_aritmetico, fillvalue=Individuo.crossover_aritmetico)
+            )
+        )
+        
+        
+        import ipdb; ipdb.set_trace()
+        
+        
+        # self.individuos = [ind for ind in self.individuos if not ind in dominantes]
+        
+        # self.individuos += dominantes
