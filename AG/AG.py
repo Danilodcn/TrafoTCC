@@ -7,7 +7,8 @@ except ImportError:
     from Individuo import Individuo
 
 class AG():
-    def __init__(**kwargs):
+    def __init__(self, **kwargs):
+        # import ipdb; ipdb.set_trace()
         self.variacoes = kwargs["variacoes"]
         self.numero_populacao = kwargs["numero_populacao"]
         self.constantes = kwargs["constantes"]
@@ -15,6 +16,7 @@ class AG():
         
         self.geracao_atual = 0
         
+        # import ipdb; ipdb.set_trace()
         self.startUp()
         
     def startUp(self):

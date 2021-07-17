@@ -150,9 +150,11 @@ class Teste_AG_Individuo(TestCase):
         # import ipdb; ipdb.set_trace()
     
     def teste_mutacao_do_individuo(self):
-        # import ipdb; ipdb.set_trace()
         # x = [1.233292088175284,1.524191728787062,1.557370976484120,6.052077890285870,0.543120138460825,3.545732336335654,1.173784165379759]
-        i = Individuo(variaveis=None, variacoes=VARIACOES)        
+        i = Individuo(variaveis=None, variacoes=VARIACOES) 
+        #
+        # import ipdb; ipdb.set_trace()
+        i.trafo.constantes       
         
         filho = i.mutacao_uniforme(.3)
         self.assertIsNotNone(filho)

@@ -27,7 +27,7 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
         self.assertTrue(existe_arquivo, f'O "{self.teste}" arquivo nao existe no ditetório "{self.pathjson}"')
         
     def teste_criação_do_objeto_Algoritmo_genético(self):
-        # import ipdb; ipdb.set_trace()
         dados = load(open(self.teste, "r"))
-        ag = dados
+        # import ipdb; ipdb.set_trace()
+        ag = AG(**dados)
         

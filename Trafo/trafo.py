@@ -52,12 +52,12 @@ class Trafo(object):
         return retorno
 
     def calculo_de_dados_do_trafo(self):
-        conexao:list = self.constantes.conexao.split("-")
+        conexao:list = self.constantes["conexao"].split("-")
         # from ipdb import set_trace; set_trace()
         secundario, primario = conexao
 
-        V1 = self.constantes.V1
-        V2 = self.constantes.V2
+        V1 = self.constantes["V1"]
+        V2 = self.constantes["V2"]
 
         Vf1, Vf2 = V1, V2
 
