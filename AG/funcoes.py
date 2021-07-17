@@ -12,7 +12,7 @@ def calcular_objetivo(individuo: Individuo):
 def verifica_dominancia(i1: Individuo, i2: Individuo):
     f1 = i1.calcular_objetivos()
     f2 = i2.calcular_objetivos()
-    verifica = f1 <= f2
+    verifica = f1 < f2
     
     if np.all(verifica):
         return 1, [i1]
@@ -48,4 +48,14 @@ def e_dominado(i1: Individuo, i2: Individuo = None):
         return False
     else:
         return True
-    
+
+def distribui_argumentos(args):
+    # import ipdb; ipdb.set_trace()
+    funcao, *args = args
+    return funcao(*args)
+
+def distribui_argumentos_passando_tupla(args):
+    # import ipdb; ipdb.set_trace()
+    funcao, *args = args
+    # args = args[0]
+    return funcao(*args[0])

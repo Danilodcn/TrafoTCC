@@ -36,7 +36,6 @@ class Trafo(object):
     def inicia_as_variaveis(self, nomes: Dict, items: [Dict]) -> Dict:
         # import ipdb; ipdb.set_trace()
         retorno = utils.QueryDict({})
-
         for nome in nomes.keys():
             try:
                 retorno[nome] = items[nome]

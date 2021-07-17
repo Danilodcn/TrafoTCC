@@ -1,5 +1,5 @@
 from typing import List
-from itertools import compress
+# from itertools import compress
 import numpy.random as rd
 import numpy as np
 
@@ -12,8 +12,11 @@ except:
 
 
 class Individuo(object):
+    numero_identificao = 0
     trafo = Trafo(CONSTANTES_DADAS)
     def __init__(self, variaveis: dict=None, variacoes: dict=None):
+        Individuo.numero_identificao += 1
+        self.id = Individuo.numero_identificao
         texto = 'O argumento "variaveis" ou "variacoes" deve ser um dicionário válido'
         texto += f": variaveis >> {variaveis}; variacoes >> {variacoes}"
         self.variacoes = variacoes
@@ -54,9 +57,10 @@ class Individuo(object):
         return len(self.variaveis)
 
     def __repr__(self):
-        lst = [f"{key} = {round(value, 3)}" for key, value in zip(self.nomes, self.variaveis)]
-        a_imprimir = ", ".join(lst)
-        a_imprimir += " (objetivo = {})".format(self.calcular_objetivos())
+        # lst = [f"{key} = {round(value, 3)}" for key, value in zip(self.nomes, self.variaveis)]
+        # a_imprimir = ", ".join(lst)
+        # a_imprimir += "(objetivo = {})".format(self.calcular_objetivos())
+        a_imprimir = self.id
         return f"Individuo ({a_imprimir})"
 
     def _gera_variaveis_aleatoriamente(self, variacoes: dict):
@@ -76,7 +80,7 @@ class Individuo(object):
         Individuo.trafo.constantes = dados
         Individuo.trafo.calculo_de_dados_do_trafo()
 
-    def crossover_aritmetico(self, pai,):
+    def crossover_aritmetico(self, pai):
         alfa = rd.rand(*self.variaveis.shape)
         alfa = alfa / np.linalg.norm(alfa)
         
@@ -109,6 +113,7 @@ class Individuo(object):
                 variaveis_atuais[i] = value
         
         # import ipdb; ipdb.set_trace()
+        
         filho = Individuo(variaveis=variaveis_atuais, variacoes=self.variacoes)
     
         return filho

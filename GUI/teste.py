@@ -1,15 +1,13 @@
 import numpy as np
+import matplotlib.pyplot as plt
+x=0
+for i in range(100):
+    x=x+0.04
+    y = np.sin(x)
+    plt.scatter(x, y)
+    plt.title("Real Time plot")
+    plt.xlabel("x")
+    plt.ylabel("sinx")
+    plt.pause(0.05)
 
-empty_ = np.array(
-        0,
-        dtype=[
-            ("Position", np.float32),
-            ("Cost", np.float32),
-            ("Objetive", np.float32),
-            ("IsDominated", np.float32),
-            ]
-    )
-empty_["Position"] = 1
-x = np.array(empty_)
-print(empty_)
-print(x)
+plt.show()

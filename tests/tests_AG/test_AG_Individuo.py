@@ -157,4 +157,4 @@ class Teste_AG_Individuo(TestCase):
         filho = i.mutacao_uniforme(.3)
         self.assertIsNotNone(filho)
         
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
