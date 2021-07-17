@@ -1,15 +1,10 @@
 import numpy as np
-
-try: 
-    from .Individuo import Individuo
-except:
-    from Individuo import Individuo
     
     
-def calcular_objetivo(individuo: Individuo):
+def calcular_objetivo(individuo):
     return individuo.calcular_objetivos()
 
-def verifica_dominancia(i1: Individuo, i2: Individuo):
+def verifica_dominancia(i1, i2):
     f1 = i1.calcular_objetivos()
     f2 = i2.calcular_objetivos()
     verifica = f1 < f2
@@ -26,7 +21,7 @@ def verifica_dominancia(i1: Individuo, i2: Individuo):
     
     # import ipdb; ipdb.set_trace()
 
-def e_dominado(i1: Individuo, i2: Individuo = None):
+def e_dominado(i1, i2 = None):
     try:
         # input(i1)
         i1, i2 = i1

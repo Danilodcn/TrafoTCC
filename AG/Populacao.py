@@ -166,12 +166,14 @@ class Populacao(object):
             for j, ind2 in enumerate(individuos):
                 if i == j:
                     continue
-                
-                if e_dominado(ind1, ind2):
-                    # dominancia[i] = False
-                    domina = False
-                    dominados.append(ind1)
-                    break
+                try:    
+                    if e_dominado(ind1, ind2):
+                        # dominancia[i] = False
+                        domina = False
+                        dominados.append(ind1)
+                        break
+                except:
+                    import ipdb; ipdb.set_trace(context=10)
             # valores = list(filter(e_dominado, zip_longest(individuos, [ind1], fillvalue=ind1)))
             if domina:
                 dominantes.append(ind1)
@@ -193,9 +195,6 @@ class Populacao(object):
 
     def get_individuo(self, n):
         return self.individuos[n]
-    
-    def selecao(self, numero):
-        return rd.choice(self.individuos, numero)
 
     def mutacao(self, qtd, taxa):
         para_mutacao = rd.choice(self.individuos, qtd)
@@ -219,8 +218,29 @@ class Populacao(object):
             n += len(valor)
             self.individuos += valor
             # import ipdb; ipdb.set_trace()
+    
+    def selecao(self, individuos: list, n_selecionados: int, taxa=1):
+        # import ipdb; ipdb.set_trace()
+        n_selecionados = math.ceil(n_selecionados)
+        taxa_escolha = rd.rand(3)
+        selecionados = []
+        n = 0
         
-    def crossover(self, qtd_heuristico, qtd_aritmetico):
+        while n < n_selecionados:
+            dominantes, individuos = self.retira_dominantes(individuos)
+            n_dominantes = len(dominantes)
+            if n_dominantes + n > n_selecionados:
+                n_a_selecionar = n_selecionados - n
+                selecionados += list(rd.choice(dominantes, n_a_selecionar))
+            else:
+                n_a_selecionar = n_dominantes
+                selecionados += dominantes
+            n += n_a_selecionar
+            # import ipdb; ipdb.set_trace()
+            
+        return selecionados    
+        
+    def crossover(self, qtd_heuristico, qtd_aritmetico, numero_individuos):
         #Crossover Heuristico
         para_heuristico = rd.choice(self.individuos, qtd_heuristico)
         iter_para_heuristico = it.permutations(para_heuristico, 2)
@@ -244,8 +264,15 @@ class Populacao(object):
             )
         )
         
+        # import ipdb; ipdb.set_trace()
+        depois_crossover_aritmetico += self.individuos
+                
+        return self.selecao(
+            individuos=depois_crossover_aritmetico + depois_crossover_heuristico, 
+            n_selecionados=numero_individuos,
+        )
         
-        import ipdb; ipdb.set_trace()
+        
         
         
         # self.individuos = [ind for ind in self.individuos if not ind in dominantes]

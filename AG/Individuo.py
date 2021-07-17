@@ -7,8 +7,11 @@ import numpy as np
 try:
     from Trafo.trafo import Trafo
     from Trafo.CONSTANTES import VARIAVEIS, CONSTANTES_DADAS, VARIACOES
+    from AG.funcoes import verifica_dominancia, e_dominado
 except:
     from .Trafo import trafo as Trafo
+    from .AG.funcoes import verifica_dominancia, e_dominado
+    
 
 
 class Individuo(object):
@@ -91,8 +94,14 @@ class Individuo(object):
         filho_1 = Individuo(variaveis=filho_1, variacoes=self.variacoes,)
         filho_2 = Individuo(variaveis=filho_2, variacoes=self.variacoes,)
         
-        return filho_1, filho_2
-    
+        numero, filho = verifica_dominancia(filho_1, filho_2)
+        
+        if numero == 0:
+            return filho[round(rd.rand())]
+        else: 
+            return filho[0]
+            
+                
     def crossover_heuristico(self, pai):
         r = rd.rand(*self.variaveis.shape)
         r = r / np.linalg.norm(r)

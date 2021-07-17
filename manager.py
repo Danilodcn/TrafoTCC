@@ -8,7 +8,6 @@ from json import dump
 def c():
     ...
 
-
 @c.command()
 def tests():
     loader = TestLoader()
@@ -18,15 +17,14 @@ def tests():
 
 @c.command()
 @click.option(
-    "-t", 
-    prompt="Teste", 
-    required=True, 
+    "-t",
+    required=False, 
     type=int,
     help='realiza os testes usando o arquivo "teste_{n}.json"'
     )
 @click.option(
     "-error", 
-    required=True, 
+    required=False, 
     type=float,
     help='Erro máximo aceitável para os testes em %'
     )
@@ -48,14 +46,20 @@ def tests():
     is_flag=True,
     help="mostrar testes com gráficos"
 )
-def teste(t, error, verbose, npop, grafico):
+@click.option(
+    "--ag",
+    required=False,
+    is_flag=True,
+    help="Realizar apenas os testes referentes ao própria implementação do AG"
+)
+def teste(t, error, verbose, npop, grafico, ag):
     """
         Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
     """
-    
-    print("-.-." * 25)
+
+    print("==#==" * 22)
     error /= 100            # TODO ola mundo, isso
-    config = {"n": t, "error": error, "npop": npop, "grafico": grafico}
+    config = {"n": t, "error": error, "npop": npop, "grafico": grafico, "ag": ag}
     dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")

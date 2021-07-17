@@ -56,7 +56,45 @@ class Teste_AG_População(TestCase):
         objetivos = populacao.calcular_objetivos()
         self.assertIsNotNone(objetivos)
 
+    def teste_selecao_dos_individuos_na_população(self):
+        if self.config["ag"]:
+            return
+        
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        
+        fig, ax = plt.subplots()
+        if self.config["grafico"]:
+            populacao.gerar_grafico(
+                    separado=False, 
+                    debug=4, 
+                    titulo="ANTES Mutação", 
+                    fig=fig, ax=ax, 
+                    geracao=1, 
+                    color="red"
+                )
+        
+        populacao.individuos = populacao.selecao(
+            populacao.individuos, 
+            n_selecionados=populacao.numero_populacao / 2, 
+            taxa=.3
+        )
+        
+        if self.config["grafico"]:
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4, 
+                titulo="ANTES e DEPOIS da Seleção", 
+                fig=fig, ax=ax, 
+                geracao=2, 
+                color="yellow"
+            )
+            plt.show()
+        
+
     def teste_plotagem_de_todos_os_objetivos_dos_individuos_na_população(self):
+        if self.config["ag"]:
+            return
+        
         populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
         plotar = self.config["grafico"]
         if plotar:
@@ -66,27 +104,52 @@ class Teste_AG_População(TestCase):
             print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
     
     def teste_plotagem_das_frentes_de_pareto_nos_individuos_na_população(self):
+        if self.config["ag"]:
+            return
+        
         populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
         plotar = self.config["grafico"]
         # plotar = True
         if plotar:
-            populacao.gerar_grafico(separado=True, debug=3, titulo="Frentes de Pareto Individuais da População")
+            populacao.gerar_grafico(
+                separado=True, 
+                debug=3, 
+                titulo="Frentes de Pareto Individuais da População"
+            )
+            
             plt.show()
         else:
-            print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
+            print(f'O teste "Frentes de Pareto Individuais" rodou sem executar a plotagem')
    
     def teste_mutação_dos_individuos(self):
+        if self.config["ag"]:
+            return
+        
         populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
 
         fig, ax = plt.subplots()
         grafico = self.config["grafico"]
         # grafico = True
         if grafico:
-            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES Mutação", fig=fig, ax=ax, geracao=1, color="red")
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4, 
+                titulo="ANTES Mutação", 
+                fig=fig, ax=ax, 
+                geracao=1, 
+                color="red"
+            )
             pass
         populacao.mutacao(qtd=20, taxa=.4)
         if grafico:
-            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES e DEPOIS Mutação",  fig=fig, ax=ax, geracao=2, color="blue")
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4, 
+                titulo="ANTES e DEPOIS Mutação",  
+                fig=fig, ax=ax, 
+                geracao=2, 
+                color="blue"
+            )
         
             plt.show()
         else:
@@ -94,18 +157,40 @@ class Teste_AG_População(TestCase):
         
         
     def teste_crossover_dos_individuos(self):
+        if self.config["ag"]:
+            return
+        
         populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
 
         fig, ax = plt.subplots()
         grafico = self.config["grafico"]
-        grafico = True
+        # grafico = True
         if grafico:
-            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES", fig=fig, ax=ax, geracao=1, color="red")
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4,
+                titulo="ANTES", 
+                fig=fig, ax=ax, 
+                geracao=1, 
+                color="brown"
+            )
         qtd, qtd2 = 10, 10
-        populacao.crossover(qtd_heuristico=qtd, qtd_aritmetico=qtd2)
+        
+        populacao.individuos = populacao.crossover(
+            qtd_heuristico=qtd, 
+            qtd_aritmetico=qtd2, 
+            numero_individuos=populacao.numero_populacao
+        )
         
         if grafico:
-            populacao.gerar_grafico(separado=False, debug=4, titulo="ANTES e DEPOIS do crossover",  fig=fig, ax=ax, geracao=2, color="blue")
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4, 
+                titulo="ANTES e DEPOIS do crossover",  
+                fig=fig, ax=ax, 
+                geracao=2, 
+                color="green"
+            )
         
             plt.show()
         else:
@@ -118,4 +203,4 @@ class Teste_AG_População(TestCase):
         # else:
         #     print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
             
-            
+   

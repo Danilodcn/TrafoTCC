@@ -1,0 +1,16 @@
+{
+    "max_geracoes": 30,
+    "numero_populacao": 20,
+
+    "variacoes": {
+        "Jbt": [1.2, 1.4],
+        "Jat": [1.4, 1.6],
+        "Bm": [1.5, 1.6],
+        "Ksw": [6, 7],
+        "kt": [0.45, 0.55],
+        "Rjan": [3.4, 3.6],
+        "rel": [1.1, 1.2]
+        },
+    "constantes": {
+    }
+}
