@@ -52,6 +52,7 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
             fig=fig, ax=ax,
             geracao=1
         )
+        
         # plt.ylim([1700, 2050])
         # plt.xlim([480, 650])
         plt.show()
