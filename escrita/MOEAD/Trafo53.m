@@ -454,8 +454,8 @@ f2=(MAT3+Mbt3+MT);
 f1=PerdasT;
 %% APLICANDO PUNIÇÃO NOS LIMITES: tira comentários abaixo restrições perdas totais, massa ativa, fator de carga para rendimento máximo e impedância percentual
 if PerdasT > 2000;
-f2=(MAT3+Mbt3+MT)+(PerdasT-2000)*100;  %1000
-f1=PerdasT+(PerdasT-2000)*100;    %3000
+    f2=(MAT3+Mbt3+MT)+(PerdasT-2000)*100;  %1000
+    f1=PerdasT+(PerdasT-2000)*100;    %3000
 end 
 %%%%%%%%%%%%%%
 

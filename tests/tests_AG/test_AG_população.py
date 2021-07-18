@@ -30,9 +30,11 @@ class Teste_AG_Cria_População(TestCase):
         self.variaveis = dict(zip(VARIACOES.keys(), variaveis))
         self.erro_aceitavel = self.config["error"]
         self.numero_populacao = self.config["npop"]
+        self.constantes = self.json["constantes"]
+        
 
     def teste_cria_população(self):
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
         try:
             None # import ipdb; ipdb.set_trace()
         except Exception as error:
@@ -50,9 +52,11 @@ class Teste_AG_População(TestCase):
         self.variaveis = dict(zip(VARIACOES.keys(), variaveis))
         self.erro_aceitavel = self.config["error"]
         self.numero_populacao = self.config["npop"]
+        self.constantes = self.json["constantes"]
     
     def teste_calculo_de_todos_os_objetivos_dos_individuos_na_população(self):
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
+        # import ipdb; ipdb.set_trace()
         objetivos = populacao.calcular_objetivos()
         self.assertIsNotNone(objetivos)
 
@@ -60,7 +64,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
         
         fig, ax = plt.subplots()
         if self.config["grafico"]:
@@ -95,7 +99,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
         plotar = self.config["grafico"]
         if plotar:
             populacao.gerar_grafico(separado=True, debug=3, titulo="")
@@ -107,7 +111,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
         plotar = self.config["grafico"]
         # plotar = True
         if plotar:
@@ -125,7 +129,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
 
         fig, ax = plt.subplots()
         grafico = self.config["grafico"]
@@ -140,7 +144,8 @@ class Teste_AG_População(TestCase):
                 color="red"
             )
             pass
-        populacao.mutacao(qtd=20, taxa=.4)
+
+        populacao.mutacao(qtd=20, taxa=.4, n_frentes=3)
         if grafico:
             populacao.gerar_grafico(
                 separado=False, 
@@ -160,7 +165,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
 
         fig, ax = plt.subplots()
         grafico = self.config["grafico"]
@@ -176,9 +181,10 @@ class Teste_AG_População(TestCase):
             )
         qtd = 10
         
-        populacao.individuos = populacao.crossover_heuristico(
+        populacao.crossover_heuristico(
             qtd_heuristico=qtd,
-            numero_individuos=populacao.numero_populacao
+            numero_individuos=populacao.numero_populacao,
+            n_frentes=3
         )
         
         if grafico:
@@ -200,7 +206,7 @@ class Teste_AG_População(TestCase):
         if self.config["ag"]:
             return
         
-        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+        populacao = Populacao(self.constantes, self.numero_populacao, variacoes=VARIACOES)
 
         fig, ax = plt.subplots()
         grafico = self.config["grafico"]
@@ -216,9 +222,10 @@ class Teste_AG_População(TestCase):
             )
         qtd = 10
         
-        populacao.individuos = populacao.crossover_aritmetico(
+        populacao.crossover_aritmetico(
             qtd_aritmetico=qtd,
-            numero_individuos=populacao.numero_populacao
+            numero_individuos=populacao.numero_populacao,
+            n_frentes=3
         )
         
         if grafico:

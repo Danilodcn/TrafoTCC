@@ -2,11 +2,11 @@ import numpy as np
     
     
 def calcular_objetivo(individuo):
-    return individuo.calcular_objetivos()
+    return individuo.calcular_objetivos(penalidade=True)
 
 def verifica_dominancia(i1, i2):
-    f1 = i1.calcular_objetivos()
-    f2 = i2.calcular_objetivos()
+    f1 = i1.calcular_objetivos(penalidade=True)
+    f2 = i2.calcular_objetivos(penalidade=True)
     verifica = f1 < f2
     
     if i1 == i2:
@@ -35,8 +35,8 @@ def e_dominado(i1, i2 = None):
     if i1 == i2: 
         return False
     
-    f1 = i1.calcular_objetivos()
-    f2 = i2.calcular_objetivos()
+    f1 = i1.calcular_objetivos(penalidade=True)
+    f2 = i2.calcular_objetivos(penalidade=True)
     verifica = f1 <= f2
     
     if np.all(verifica):

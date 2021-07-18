@@ -39,8 +39,14 @@ def create_suproblem(n_obj, n_pop, T):
 
 
 class Populacao(object):
-    def __init__(self, numero_populacao: int, individuos: list=None, variacoes: dict=None):
+    def __init__(self, 
+        constantes: dict, numero_populacao: int, 
+        individuos: list=None, variacoes: dict=None
+    ):
         #import ipdb; ipdb.set_trace()
+        Individuo.trafo.constantes = constantes
+        Individuo.trafo.calculo_de_dados_do_trafo()
+        
         try: 
             self.numero_populacao = int(numero_populacao)
             if isinstance(individuos, list) and len(individuos) > 0:
@@ -60,7 +66,7 @@ class Populacao(object):
         self.number_of_Neighbors = min(max(self.number_of_Neighbors, 2), 15)  # TODO porque usei 2 e 15?
         
     def __gera_individuos(self):
-        return [Individuo(variacoes=self.variacoes) for i in range(self.numero_populacao)]
+        return {Individuo(variacoes=self.variacoes) for i in range(self.numero_populacao)}
     
     def __len__(self):
         return len(self.individuos)
@@ -78,7 +84,7 @@ class Populacao(object):
     def length(self):
         return len(self.individuos)
     
-    def gerar_grafico(self, separado=False, debug=0, titulo="", fig=None, ax=None, geracao=1, color="red"):
+    def gerar_grafico(self, separado=False, debug=0, titulo="", fig=None, ax=None, geracao=1, color=None):
         """
             @param:
                 debug: 
@@ -100,7 +106,6 @@ class Populacao(object):
         else: 
             vetores = self.separa_dominantes()
         
-        cor = None
         for j, individuos in vetores.items():
             perdas, massas = self.calcular_objetivos(individuos)
             # plt.plot(massas, perdas, leg)
@@ -121,12 +126,11 @@ class Populacao(object):
                         label += f"{j} {titulo}"
                     elif debug == 4:
                         txt = str(geracao)
-                        cor = color
                         label = f"Geração {geracao}"
                         
                     ax.annotate(txt, (x, y))
             
-            ax.scatter(massas, perdas, label=f"{label}", color=cor)
+            ax.scatter(massas, perdas, label=f"{label} com {len(perdas)}", color=color)
         
         plt.legend()
         # print(len(self.individuos))
@@ -154,7 +158,7 @@ class Populacao(object):
     def retira_dominantes(self, individuos: Iterator):
         # print("inicio: ", len(individuos))
         # import ipdb; ipdb.set_trace()
-        
+        individuos = list(individuos)
         # n_individuos = len(individuos)
         # dominancia = [True] * n_individuos
         dominantes = []
@@ -162,10 +166,15 @@ class Populacao(object):
         
         for i, ind1 in enumerate(individuos):
             domina = True
-            for j, ind2 in enumerate(individuos):
+            for j, ind2 in enumerate(individuos[i:]):
                 if i == j:
                     continue                        
-                try:    
+                try:
+                    # numero, ind = verifica_dominancia(ind1, ind2)
+                    # if numero == 1 or numero == 2:
+                    #     domina = False
+                    #     dominados.append(ind1)
+                    #     break  
                     if e_dominado(ind1, ind2):
                         # dominancia[i] = False
                         domina = False
@@ -190,52 +199,63 @@ class Populacao(object):
     def get_individuo(self, n):
         return self.individuos[n]
 
-    def mutacao(self, qtd, taxa):
-        para_mutacao = rd.choice(self.individuos, qtd)
+    def mutacao(self, qtd, numero_individuos, taxa, n_frentes):
+        para_mutacao = self.selecao(n_selecionados=qtd, n_frentes=n_frentes)
         # para_mutacao = self.selecao(n_selecionados=qtd)
         
         taxa = [taxa] * len(para_mutacao)
-        depois_mutacao = list(
-            map(
-                distribui_argumentos, 
-                it.zip_longest([], para_mutacao, taxa, fillvalue=Individuo.mutacao_uniforme)
-            )
+        
+        depois_mutacao = map(
+            distribui_argumentos, 
+            it.zip_longest([], para_mutacao, taxa, fillvalue=Individuo.mutacao_uniforme)
         )
         
-        vetores = self.separa_dominantes(depois_mutacao + self.individuos)
-        n, self.individuos = 0, []
-        valores = iter(vetores.items())
-        while n <= self.numero_populacao:
-            try: 
-                _, valor = next(valores)
-            except StopIteration:
-                break
-            
-            n += len(valor)
-            self.individuos += valor
-            # import ipdb; ipdb.set_trace()
+        # from ipdb import set_trace; set_trace()
+        self.individuos.update(depois_mutacao)
+        if numero_individuos:
+            self.individuos = self.selecao(
+                n_selecionados=numero_individuos,
+                n_frentes=n_frentes,
+            )
     
-    def selecao(self, individuos: list=None, n_selecionados: int=0):
+    
+    def selecao(self, individuos: list=None, n_selecionados: int=0, n_frentes=3):
         if individuos == None:
             individuos = self.individuos.copy()
             
         # import ipdb; ipdb.set_trace()
         n_selecionados = math.ceil(n_selecionados)
-        taxa_escolha = rd.rand(3)
-        selecionados = []
+        # taxa_escolha = rd.rand(3)
+        selecionados = set()
         n = 0
-        
+        iteracao = 0
         while n < n_selecionados:
+            iteracao += 1
             dominantes, individuos = self.retira_dominantes(individuos)
+            
+            # import ipdb; ipdb.set_trace(context=10)
+            if  iteracao > n_frentes or len(individuos) == 0:
+                n_a_selecionar = n_selecionados - len(selecionados)
+                selecionados.update(rd.choice(individuos + dominantes, n_a_selecionar, False))
+                break
+                
             n_dominantes = len(dominantes)
+
             if n_dominantes + n > n_selecionados:
                 n_a_selecionar = n_selecionados - n
-                selecionados += list(rd.choice(dominantes, n_a_selecionar))
+                selecionados.update(rd.choice(dominantes, n_a_selecionar, False))
+                n = len(selecionados)
+                
             else:
                 n_a_selecionar = n_dominantes
-                selecionados += dominantes
-            n += n_a_selecionar
-            # import ipdb; ipdb.set_trace()
+                selecionados.update(dominantes)
+                n = len(selecionados)
+                continue
+            
+        try:
+            assert len(selecionados) == n_selecionados
+        except:
+            import ipdb; ipdb.set_trace(context=10)
             
         return selecionados    
         
@@ -274,41 +294,45 @@ class Populacao(object):
         
         # self.individuos += dominantes
         
-    def crossover_heuristico(self, qtd_heuristico, numero_individuos):
+    def crossover_heuristico(self, qtd_heuristico, numero_individuos, n_frentes):
         #Crossover Heuristico
-        para_heuristico = rd.choice(self.individuos, qtd_heuristico)
+        # para_heuristico = rd.choice(self.individuos, qtd_heuristico)
+        para_heuristico = self.selecao(n_selecionados=qtd_heuristico, n_frentes=n_frentes)
+        # import ipdb; ipdb.set_trace(context=10)
+        
         iter_para_heuristico = it.permutations(para_heuristico, 2)
         
-        depois_crossover_heuristico = list(
-            map(
-                distribui_argumentos_passando_tupla,
-                it.zip_longest([], iter_para_heuristico, fillvalue=Individuo.crossover_heuristico)
-            )
+        depois_crossover_heuristico = map(
+            distribui_argumentos_passando_tupla,
+            it.zip_longest([], iter_para_heuristico, fillvalue=Individuo.crossover_heuristico)
         )
-        # import ipdb; ipdb.set_trace()
-                
-        return self.selecao(
-            individuos=self.individuos + depois_crossover_heuristico, 
+        
+        # import ipdb; ipdb.set_trace(context=10)
+        self.individuos.update(depois_crossover_heuristico)
+        
+        self.individuos = self.selecao(
             n_selecionados=numero_individuos,
+            n_frentes=n_frentes
         )
 
-        
-    def crossover_aritmetico(self, qtd_aritmetico, numero_individuos):
+    def crossover_aritmetico(self, qtd_aritmetico, numero_individuos, n_frentes):
         # import ipdb; ipdb.set_trace()       
         #Crossover Aritmético
-        para_aritmetico = rd.choice(self.individuos, qtd_aritmetico)
+        # para_aritmetico = rd.choice(self.individuos, qtd_aritmetico)
+        para_aritmetico = self.selecao(n_selecionados=qtd_aritmetico, n_frentes=n_frentes)
         iter_para_aritmetico = it.permutations(para_aritmetico, 2)
         
-        depois_crossover_aritmetico = list(
-            map(
-                distribui_argumentos_passando_tupla,
-                it.zip_longest([], iter_para_aritmetico, fillvalue=Individuo.crossover_aritmetico)
-            )
+        depois_crossover_aritmetico = map(
+            distribui_argumentos_passando_tupla,
+            it.zip_longest([], iter_para_aritmetico, fillvalue=Individuo.crossover_aritmetico)
         )
         
-        # import ipdb; ipdb.set_trace()
-        return self.selecao(
-            individuos=depois_crossover_aritmetico + self.individuos, 
+        self.individuos.update(depois_crossover_aritmetico)
+        
+        # import ipdb; ipdb.set_trace(context=20)
+        
+        self.individuos = self.selecao(
             n_selecionados=numero_individuos,
+            n_frentes=n_frentes,
         )
         

@@ -1,10 +1,11 @@
 {
     "max_geracoes": 30,
-    "numero_populacao": 20,
+    "numero_populacao": 30,
 
     "constantes_ag":{
-        "taxa_mutacao": 0.3,
-        "taxa_cruzamento": 0.4
+        "taxa_mutacao": 0.6,
+        "taxa_crossover": 0.4,
+        "n_frentes": 1
     },
 
     "variacoes": {

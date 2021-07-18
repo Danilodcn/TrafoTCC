@@ -38,26 +38,28 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
         dados = load(open(self.teste, "r"))
         ag = AG(**dados)
         
+        grafico = self.config["grafico"]
+        if grafico:
+            fig, ax = plt.subplots()
+        
+            ag.populacao.gerar_grafico(
+                separado=True,
+                debug=4,
+                titulo="AG antes na 1º e 2º geração",
+                fig=fig, ax=ax,
+                geracao=1
+            )
+        
+        ag.run_geracao(1)
+        
         fig, ax = plt.subplots()
-        
         ag.populacao.gerar_grafico(
             separado=True,
             debug=4,
-            titulo="AG antes na 1º e 2º geração",
+            titulo="AG na 1º geração",
             fig=fig, ax=ax,
-            geracao=1, color="blue"
+            geracao=1
         )
-        
-        ag.run_geracao()
-        
-        ag.populacao.gerar_grafico(
-            separado=True,
-            debug=4,
-            titulo="AG antes na 1º e 2º geração",
-            fig=fig, ax=ax,
-            geracao=2, color="red"
-        ) 
-        
+        plt.ylim([1700, 2050])
+        plt.xlim([480, 650])
         plt.show()
-        
-        

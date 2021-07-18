@@ -70,13 +70,13 @@ class Trafo(object):
         }
         self.resultado_calculos.update(para_teste)
 
-    def run(self, variaveis: dict, **kw) -> (float, float):
+    def run(self, variaveis: dict, penalidade: bool=False, **kw) -> (float, float):
         # import ipdb; ipdb.set_trace()
         # assert VARIAVEIS.keys() == variaveis.keys()
 
-        return self.calculo_das_perdas_do_trafo(variaveis)
+        return self.calculo_das_perdas_do_trafo(variaveis, penalidade=penalidade)
 
-    def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], debug: bool = False):
+    def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], penalidade=False, debug: bool = False):
         Vf1 = self.resultado_calculos.Vf1
         Vf2 = self.resultado_calculos.Vf2
         
@@ -241,7 +241,41 @@ class Trafo(object):
         PerdasT = Po + Pj
         Mativa = MAT3 + Mbt3 + MT
         # import ipdb; ipdb.set_trace()
-        
+        # Mativa *= 3
+        # assert isinstance(penalidade, int)
+        if penalidade == 1:
+            Fc = np.sqrt(Po / Pj)
+            
+            #O trafo deve respeitar as restrições de desigualdade pg 82 da tese
+            Perda_max = 2000
+            Mativa_max = 610
+            Fc_max = 0.6
+            f_multiplicativo_perdas = 100
+            f_multiplicativo_massas = 50
+            f_multiplicativo_fc = 700
+            
+            f1, f2 = PerdasT, Mativa
+            
+            
+            if PerdasT > Perda_max:
+                
+                f1 = f1 + abs(PerdasT - Perda_max) * f_multiplicativo_perdas + Perda_max
+                f2 = f2 + abs(Mativa - Mativa_max) * f_multiplicativo_massas + Mativa_max
+                
+            
+            if Mativa > Mativa_max:
+                f1 = f1 + abs(PerdasT - Perda_max) * f_multiplicativo_perdas + Perda_max
+                f2 = f2 + abs(Mativa - Mativa_max) * f_multiplicativo_massas + Mativa_max
+            
+            if Fc > Fc_max:
+                f1 = f1 + abs(Fc - Fc_max) * f_multiplicativo_fc + Perda_max
+                f2 = f2 + abs(Fc - Fc_max) * f_multiplicativo_fc + Mativa_max
+                # import ipdb; ipdb.set_trace(context=30)
+                
+            PerdasT, Mativa = f1, f2
+            
+            return np.array([PerdasT, Mativa], dtype=np.float64)
+
         if debug:
             para_teste = {
                 "Et": Et,
@@ -322,8 +356,8 @@ class Trafo(object):
                 "R2": R2,
                 "I2": I2,
                 "Pj": Pj,
-                "PerdasT": PerdasT,
-                "Mativa": Mativa,                
+                # "PerdasT": PerdasT,
+                # "Mativa": Mativa,                
             }
             
             #para_teste.update(teste)

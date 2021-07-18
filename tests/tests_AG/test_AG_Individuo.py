@@ -50,6 +50,8 @@ class Teste_AG_Criação_Individuo(TestCase):
 
         real_massa_ativa = self.json["Mativa"]
         real_perdas_totais = self.json["PerdasT"]
+    
+        perdas_totais, massa_ativa = real_perdas_totais, real_massa_ativa
 
         # ind = Individuo(variacoes=VARIACOES)
         # perda, massa = ind.calcula_objetivo()

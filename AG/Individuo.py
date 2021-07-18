@@ -59,6 +59,9 @@ class Individuo(object):
 
     def __len__(self):
         return len(self.variaveis)
+    
+    def __hash__(self):
+        return hash(tuple(self.calcular_objetivos()))
 
     def __repr__(self):
         # lst = [f"{key} = {round(value, 3)}" for key, value in zip(self.nomes, self.variaveis)]
@@ -74,8 +77,8 @@ class Individuo(object):
         # return dict(zip(variacoes.keys(), variaveis))
         return variaveis
 
-    def calcular_objetivos(self):
-        self.objetivos = Individuo.trafo.run(self.variaveis)
+    def calcular_objetivos(self, penalidade=True):
+        self.objetivos = Individuo.trafo.run(self.variaveis, penalidade=penalidade)            
         return self.objetivos
 
     @staticmethod
@@ -101,8 +104,7 @@ class Individuo(object):
             return filho[round(rd.rand())]
         else: 
             return filho[0]
-            
-                
+
     def crossover_heuristico(self, pai):
         r = rd.rand(*self.variaveis.shape)
         r = r / np.linalg.norm(r)

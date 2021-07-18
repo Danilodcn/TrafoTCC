@@ -22,37 +22,55 @@ class AG():
         # self.run_geracao()
         
     def startUp(self):
-        Individuo.trafo.constantes = self.constantes
-        Individuo.trafo.calculo_de_dados_do_trafo()
+        # Individuo.trafo.constantes = self.constantes
+        # Individuo.trafo.calculo_de_dados_do_trafo()
         
         self.populacao = Populacao(
+            constantes=self.constantes,
             numero_populacao=self.numero_populacao,
             variacoes=self.variacoes
         )
     
         
-    def run_geracao(self):
+    def run_geracao(self, geracao):
+        self.geracao_atual = geracao
         #Inicia Selecionando os Indivíduos para o cruzamento
         # import ipdb; ipdb.set_trace()
         
+        print("Começou a geração " + str(geracao))
         
-        taxa_cruzamento = self.constantes_ag["taxa_cruzamento"]
+        taxa_crossover = self.constantes_ag["taxa_crossover"]
+        taxa_mutacao = self.constantes_ag["taxa_mutacao"]
+        
+        n_frentes = self.constantes_ag["n_frentes"]
+        
+        # import ipdb; ipdb.set_trace(context=10)
         n_populacao = len(self.populacao.individuos)
         
-        n_individuos_para_crossover = round(taxa_cruzamento * n_populacao)
+        n_individuos_para_crossover = round(taxa_crossover * n_populacao)
         # individuos_para_crossover_heuristico = self.populacao.selecao(n_selecionados=taxa_cruzamento)
-        crossover_heuristico = self.populacao.crossover_heuristico(
+        
+        self.populacao.crossover_heuristico(
             qtd_heuristico=n_individuos_para_crossover,
             numero_individuos=n_populacao,
+            n_frentes=n_frentes,
         )
         
-        crossover_aritmetico = self.populacao.crossover_aritmetico(
-            qtd_aritmetico=n_individuos_para_crossover,
-            numero_individuos=n_populacao
-        )
+        # # import ipdb; ipdb.set_trace(context=10)
+        # self.populacao.crossover_aritmetico(
+        #     qtd_aritmetico=n_individuos_para_crossover,
+        #     numero_individuos=n_populacao,
+        #     n_frentes=n_frentes,
+        # )
         
-        self.populacao.individuos = self.populacao.selecao(
-            self.populacao.individuos + crossover_aritmetico + crossover_heuristico,
-            n_selecionados=n_populacao
-        )
+        # self.populacao.mutacao(
+        #     qtd=n_populacao,
+        #     numero_individuos=0,
+        #     taxa=taxa_mutacao,
+        #     n_frentes=n_frentes,
+        # )
+        # # import ipdb; ipdb.set_trace(context=10)
+        
         # self.populacao.crossover_heuristico(qtd_heuristico, numero_individuos)
+        # import ipdb; ipdb.set_trace(context=20)
+        
