@@ -1,3 +1,4 @@
+import itertools as it
 
 try:
     from .Populacao import Populacao
@@ -36,20 +37,13 @@ class AG():
         self.geracao_atual = geracao
         #Inicia Selecionando os Indivíduos para o cruzamento
         # import ipdb; ipdb.set_trace()
-        
-        print("Começou a geração " + str(geracao))
-        
         taxa_crossover = self.constantes_ag["taxa_crossover"]
         taxa_mutacao = self.constantes_ag["taxa_mutacao"]
-        
         n_frentes = self.constantes_ag["n_frentes"]
-        
         # import ipdb; ipdb.set_trace(context=10)
         n_populacao = len(self.populacao.individuos)
-        
         n_individuos_para_crossover = round(taxa_crossover * n_populacao)
         # individuos_para_crossover_heuristico = self.populacao.selecao(n_selecionados=taxa_cruzamento)
-        
         self.populacao.crossover_heuristico(
             qtd_heuristico=n_individuos_para_crossover,
             numero_individuos=n_populacao,
@@ -57,11 +51,11 @@ class AG():
         )
         
         # # import ipdb; ipdb.set_trace(context=10)
-        # self.populacao.crossover_aritmetico(
-        #     qtd_aritmetico=n_individuos_para_crossover,
-        #     numero_individuos=n_populacao,
-        #     n_frentes=n_frentes,
-        # )
+        self.populacao.crossover_aritmetico(
+            qtd_aritmetico=n_individuos_para_crossover,
+            numero_individuos=n_populacao,
+            n_frentes=n_frentes,
+        )
         
         # self.populacao.mutacao(
         #     qtd=n_populacao,
@@ -73,4 +67,12 @@ class AG():
         
         # self.populacao.crossover_heuristico(qtd_heuristico, numero_individuos)
         # import ipdb; ipdb.set_trace(context=20)
-        
+    
+    def gerar_populacao_inicial(self, n):
+        individuos = it.chain(*(self.populacao.gera_individuos() for i in range(n)))
+        self.populacao.individuos.update(individuos)
+        self.populacao.individuos = self.populacao.selecao(
+            n_selecionados=self.numero_populacao,
+            n_frentes=8,
+        )
+

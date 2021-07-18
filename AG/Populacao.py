@@ -53,7 +53,7 @@ class Populacao(object):
                 self.individuos = individuos
             elif isinstance(variacoes, dict) and individuos == None:
                 self.variacoes = variacoes
-                self.individuos = self.__gera_individuos()
+                self.individuos = self.gera_individuos()
         except Exception as error:
             texto_erro= f'Erro na construção da classe "{Populacao.__name__}". \
                         \nDurante a execução no arquivo "{__name__}" \
@@ -65,7 +65,7 @@ class Populacao(object):
         self.number_of_Neighbors = np.ceil(self.numero_populacao * 0.1)
         self.number_of_Neighbors = min(max(self.number_of_Neighbors, 2), 15)  # TODO porque usei 2 e 15?
         
-    def __gera_individuos(self):
+    def gera_individuos(self):
         return {Individuo(variacoes=self.variacoes) for i in range(self.numero_populacao)}
     
     def __len__(self):
@@ -166,7 +166,7 @@ class Populacao(object):
         
         for i, ind1 in enumerate(individuos):
             domina = True
-            for j, ind2 in enumerate(individuos[i:]):
+            for j, ind2 in enumerate(individuos):
                 if i == j:
                     continue                        
                 try:
