@@ -76,7 +76,7 @@ class Teste_AG_População(TestCase):
         populacao.individuos = populacao.selecao(
             populacao.individuos, 
             n_selecionados=populacao.numero_populacao / 2, 
-            taxa=.3
+            # taxa=.3
         )
         
         if self.config["grafico"]:
@@ -156,7 +156,7 @@ class Teste_AG_População(TestCase):
             print(f"O teste 'Mutação dos Individuos' rodou sem executar a plotagem")
         
         
-    def teste_crossover_dos_individuos(self):
+    def teste_crossover_heuristico_dos_individuos(self):
         if self.config["ag"]:
             return
         
@@ -174,11 +174,10 @@ class Teste_AG_População(TestCase):
                 geracao=1, 
                 color="brown"
             )
-        qtd, qtd2 = 10, 10
+        qtd = 10
         
-        populacao.individuos = populacao.crossover(
-            qtd_heuristico=qtd, 
-            qtd_aritmetico=qtd2, 
+        populacao.individuos = populacao.crossover_heuristico(
+            qtd_heuristico=qtd,
             numero_individuos=populacao.numero_populacao
         )
         
@@ -186,7 +185,7 @@ class Teste_AG_População(TestCase):
             populacao.gerar_grafico(
                 separado=False, 
                 debug=4, 
-                titulo="ANTES e DEPOIS do crossover",  
+                titulo="ANTES e DEPOIS do crossover HEURISTICO",  
                 fig=fig, ax=ax, 
                 geracao=2, 
                 color="green"
@@ -196,11 +195,45 @@ class Teste_AG_População(TestCase):
         else:
             print(f"O teste 'Mutação dos Individuos' rodou sem executar a plotagem")
         
-        # plotar = self.config["grafico"]
-        # # plotar = True
-        # if plotar:
-        #     populacao.gerar_grafico(separado=True, debug=3)
-        # else:
-        #     print(f"O teste {self.__class__.__name__} rodou sem executar a plotagem")
             
+    def teste_crossover_aritmetico_dos_individuos(self):
+        if self.config["ag"]:
+            return
+        
+        populacao = Populacao(self.numero_populacao, variacoes=VARIACOES)
+
+        fig, ax = plt.subplots()
+        grafico = self.config["grafico"]
+        # grafico = True
+        if grafico:
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4,
+                titulo="ANTES", 
+                fig=fig, ax=ax, 
+                geracao=1, 
+                color="brown"
+            )
+        qtd = 10
+        
+        populacao.individuos = populacao.crossover_aritmetico(
+            qtd_aritmetico=qtd,
+            numero_individuos=populacao.numero_populacao
+        )
+        
+        if grafico:
+            populacao.gerar_grafico(
+                separado=False, 
+                debug=4, 
+                titulo="ANTES e DEPOIS do crossover ARITMÉTICO",  
+                fig=fig, ax=ax, 
+                geracao=2, 
+                color="green"
+            )
+            
+            plt.show()
+            
+        else:
+            print(f"O teste 'Mutação dos Individuos' rodou sem executar a plotagem")
+        
    

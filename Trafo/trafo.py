@@ -81,12 +81,12 @@ class Trafo(object):
         Vf2 = self.resultado_calculos.Vf2
         
         # constantes
-        S = self.constantes.S
-        f = self.constantes.f
-        Ke = self.constantes.Ke 
-        tipo = self.constantes.tipo
-        Dfe = self.constantes.Dfe
-        Dal = self.constantes.Dal
+        S = self.constantes["S"]
+        f = self.constantes["f"]
+        Ke = self.constantes["Ke"] 
+        tipo = self.constantes["tipo"]
+        Dfe = self.constantes["Dfe"]
+        Dal = self.constantes["Dal"]
         
         # variaveis
         try: 

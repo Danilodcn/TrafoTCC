@@ -17,6 +17,7 @@ except:
 class Individuo(object):
     numero_identificao = 0
     trafo = Trafo(CONSTANTES_DADAS)
+    
     def __init__(self, variaveis: dict=None, variacoes: dict=None):
         Individuo.numero_identificao += 1
         self.id = Individuo.numero_identificao

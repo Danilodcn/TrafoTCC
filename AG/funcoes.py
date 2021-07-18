@@ -9,7 +9,10 @@ def verifica_dominancia(i1, i2):
     f2 = i2.calcular_objetivos()
     verifica = f1 < f2
     
-    if np.all(verifica):
+    if i1 == i2:
+        return -1, [i1]
+    
+    elif np.all(verifica):
         return 1, [i1]
     
     elif np.any(verifica):
@@ -29,15 +32,15 @@ def e_dominado(i1, i2 = None):
         # print(erro)
         pass
     
-    # if i1 == i2: 
-    #     return False
+    if i1 == i2: 
+        return False
     
     f1 = i1.calcular_objetivos()
     f2 = i2.calcular_objetivos()
     verifica = f1 <= f2
     
     if np.all(verifica):
-        return False
+        return 0
     
     elif np.any(verifica):
         return False

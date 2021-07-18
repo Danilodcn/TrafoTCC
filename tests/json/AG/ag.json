@@ -2,6 +2,11 @@
     "max_geracoes": 30,
     "numero_populacao": 20,
 
+    "constantes_ag":{
+        "taxa_mutacao": 0.3,
+        "taxa_cruzamento": 0.4
+    },
+
     "variacoes": {
         "Jbt": [1.2, 1.4],
         "Jat": [1.4, 1.6],

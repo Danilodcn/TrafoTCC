@@ -2,6 +2,8 @@ import os
 from json import load
 from unittest import TestCase
 
+from matplotlib import pyplot as plt
+
 try:
     from AG.AG import AG
 
@@ -28,6 +30,34 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
         
     def teste_criação_do_objeto_Algoritmo_genético(self):
         dados = load(open(self.teste, "r"))
-        # import ipdb; ipdb.set_trace()
         ag = AG(**dados)
+        self.assertIsNotNone(ag, "Algo errado")
+        # import ipdb; ipdb.set_trace()
+        
+    def teste_plotagem_das_duas_primeiras_gerações(self):
+        dados = load(open(self.teste, "r"))
+        ag = AG(**dados)
+        
+        fig, ax = plt.subplots()
+        
+        ag.populacao.gerar_grafico(
+            separado=True,
+            debug=4,
+            titulo="AG antes na 1º e 2º geração",
+            fig=fig, ax=ax,
+            geracao=1, color="blue"
+        )
+        
+        ag.run_geracao()
+        
+        ag.populacao.gerar_grafico(
+            separado=True,
+            debug=4,
+            titulo="AG antes na 1º e 2º geração",
+            fig=fig, ax=ax,
+            geracao=2, color="red"
+        ) 
+        
+        plt.show()
+        
         
