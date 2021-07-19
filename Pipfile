@@ -13,6 +13,9 @@ pytest = "*"
 click = "*"
 pysimplegui = "*"
 scipy = "*"
+pyqt5 = "*"
+pyqtgraph = "*"
+qt-material = "*"
 
 [dev-packages]
 pylint = "*"

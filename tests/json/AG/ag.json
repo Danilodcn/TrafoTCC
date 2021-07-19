@@ -1,7 +1,7 @@
 {
     "max_geracoes": 30,
-    "numero_populacao": 30,
-
+    "numero_populacao": 40,
+    
     "constantes_ag":{
         "taxa_mutacao": 0.6,
         "taxa_crossover": 0.4,
