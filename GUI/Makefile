@@ -2,7 +2,7 @@ run:
 	@echo "Executando a interface grafica"
 	pyuic5.exe .\main.ui -o main.py
 	python .\teste.py
-
+	cd ./GUI
 all:
 	@echo "Executando a interface grafica"
 	pyuic5.exe .\main.ui -o main.py

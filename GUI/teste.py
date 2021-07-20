@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, json
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (
@@ -8,11 +8,9 @@ from PyQt5.QtWidgets import (
         QMessageBox 
     )
 
-
 from qt_material import apply_stylesheet
 
 from main import Ui_MainWindow
-
 
 class MainWindow(QMainWindow):
     def __init__(self, app, *args, **kwargs):
@@ -36,15 +34,12 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QtGui.QIcon(":/icons/svg/ic_wifi_tethering_48px.svg"))
         self.setWindowTitle("Trafo App")
         
-        
         # QtWidgets.QSizeGrip(self.ui.size_gripe)
-        self.connect_button_menu()
-        self.connect_buttons()
+        self.init_ui()
         
         self.show()
     
-
-    def connect_button_menu(self):
+    def init_ui(self):
         self.ui.botao_menu_home.clicked.connect(lambda *args, **wargs: print(args, wargs))
         
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
@@ -75,12 +70,24 @@ class MainWindow(QMainWindow):
                 self.ui.label_titulo_app.setText("Informações Sobre o Software"),
             )
         )
-    
-    def connect_buttons(self):
+        # Botao de adicionar JSON
         self.ui.botao_novo_adicionar_json.clicked.connect(
             self.seleciona_json
-        )   
-    
+        )
+        
+        #carrega combo_box
+        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Delta-Estrela")
+        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Estrela-Delta")
+        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Estrela-Estrela")
+        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Delta-Delta")
+        
+        self.ui.combo_box_novo_dados_tipo_refrigeracao.addItem("a seco")
+        self.ui.combo_box_novo_dados_tipo_refrigeracao.addItem("a óleo")
+        
+        #Inicializa a tela NOVO
+        self.__carregar_json()
+        
+        
     def seleciona_json(self, *args, **kwargs):
         # print("clicando", args)
         path = os.environ["HOMEPATH"]
@@ -103,9 +110,25 @@ class MainWindow(QMainWindow):
             error.exec_()
             # valor = error.exec_()
             # print("Valor clicado: ", valor)
-            
         # import ipdb; ipdb.set_trace(context=10)
+            
+
+    def __carregar_json(self, __json=None, file=""):
+        if __json == None:
+            if file == "":
+                file = "./GUI/json_padrao.json"
+            __json = json.load(open(file, "r"))
         
+        self.ui.spinBox_numero_max_geracoes.setValue(__json["max_geracoes"])
+        self.ui.spinBox_max_individuos_populacao.setValue(__json["numero_populacao"])
+        
+        constantes_ag = __json["constantes_ag"]
+        
+        self.ui.doubleSpinBox_taxa_mutacao.setValue(constantes_ag["taxa_mutacao"])
+        
+        
+        
+        # import ipdb; ipdb.set_trace(context=10)
         
 if __name__ == "__main__":
     import sys
