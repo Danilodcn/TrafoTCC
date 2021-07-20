@@ -74,36 +74,72 @@ class MainWindow(QMainWindow):
         self.ui.botao_novo_adicionar_json.clicked.connect(
             self.seleciona_json
         )
+        # Botao de salvar JSON
+        self.ui.botao_novo_salvar.clicked.connect(
+            lambda: self.salvar_json(file_name="")
+        )
+    
+        self.ui.botao_novo_limpar.clicked.connect(
+            lambda: self.__carregar_json(None, "")
+        )
         
         #carrega combo_box
-        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Delta-Estrela")
-        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Estrela-Delta")
-        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Estrela-Estrela")
-        self.ui.combo_box_novo_dados_trafo_conexao.addItem("Delta-Delta")
+        self.ui.combo_box_tipo_conexao.addItem("estrela-delta")
+        self.ui.combo_box_tipo_conexao.addItem("delta-estrela")
+        self.ui.combo_box_tipo_conexao.addItem("estrela-estrela")
+        self.ui.combo_box_tipo_conexao.addItem("delta-delta")
         
-        self.ui.combo_box_novo_dados_tipo_refrigeracao.addItem("a seco")
-        self.ui.combo_box_novo_dados_tipo_refrigeracao.addItem("a óleo")
+        self.ui.combo_box_tipo_refrigeracao.addItem("seco")
+        self.ui.combo_box_tipo_refrigeracao.addItem("óleo")
+        
+         #Aplica validadores nos campos lineEdit
+        self.ui.lineEdit_Ke.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        self.ui.lineEdit_potencia_trafo.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        self.ui.lineEdit_tensao_primario.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        self.ui.lineEdit_tensao_secundario.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        self.ui.lineEdit_densidade_fe.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        self.ui.lineEdit_densidade_al.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
+        
+        self.ui.label_novo_nome_do_json_adicionado.setOpenExternalLinks(True)
+        # self.ui.label_novo_nome_do_json_adicionado.setTextInteractionFlags(QtWidgets.QtTextBrowserInteraction)
+        
         
         #Inicializa a tela NOVO
         self.__carregar_json()
         
-        
+    def salvar_json(self, file_name=""):
+        if file_name == "":
+            path = os.environ["HOMEPATH"]
+            path = r"C:\Users\dacon\git\TrafoTCC\GUI"
+            file = QFileDialog.getSaveFileName(self, "Save File", path, "json file (*.json)")
+            file_name = file[0]
+        dados = self.__get_json()
+        with open(file_name, "w") as file:
+            json.dump(dados, file, indent=4)
+            
+            # import ipdb; ipdb.set_trace(context=10)
+    
     def seleciona_json(self, *args, **kwargs):
         # print("clicando", args)
         path = os.environ["HOMEPATH"]
+        path = r"C:\Users\dacon\git\TrafoTCC\GUI"
         file = QFileDialog.getOpenFileName(self, "Open File", path, "json file (*.json)")
         diretorio, file_name = os.path.split(file[0])
         _, extensao = os.path.splitext(file_name)
         
         if extensao == ".json":
-            print("Certo!!")
+            dados_lidos_json = json.load(open(diretorio + "/" + file_name, "r"))
+            self.__carregar_json(dados_lidos_json, limpar_nome=False)
+            url_link = r'<a href=file:///{0}> {1}</a>'.format(file[0], file_name)
+            self.ui.label_novo_nome_do_json_adicionado.setText(url_link.format(url_link))
+            
         else:  
             # print("Houve um erro")
             error = QMessageBox()
             error.setIcon(QMessageBox.Warning)
             error.setText("Você não selecionou um arquivo json")
             error.setWindowTitle("Erro encontrado")
-            error.setDetailedText("Detalhe do erro: ")
+            # error.setDetailedText("Detalhe do erro: ")
             error.setStandardButtons(QMessageBox.Ok)
             error.show()
             # error.buttonClicked(msgbox)
@@ -113,7 +149,7 @@ class MainWindow(QMainWindow):
         # import ipdb; ipdb.set_trace(context=10)
             
 
-    def __carregar_json(self, __json=None, file=""):
+    def __carregar_json(self, __json=None, file="", limpar_nome=True):
         if __json == None:
             if file == "":
                 file = "./GUI/json_padrao.json"
@@ -124,12 +160,114 @@ class MainWindow(QMainWindow):
         
         constantes_ag = __json["constantes_ag"]
         
-        self.ui.doubleSpinBox_taxa_mutacao.setValue(constantes_ag["taxa_mutacao"])
+        self.ui.doubleSpinBox_taxa_mutacao.setValue(constantes_ag["taxa_mutacao"]*100)
+        self.ui.doubleSpinBox_taxa_crossover.setValue(constantes_ag["taxa_crossover"]*100)
+        self.ui.spinBox_numero_frentes_selecionar.setValue(constantes_ag["n_frentes"])
         
+        variacoes = __json["variacoes"]
         
+        self.ui.doubleSpinBox_min_Jbt.setValue(variacoes["Jbt"][0])
+        self.ui.doubleSpinBox_max_Jbt.setValue(variacoes["Jbt"][1])
+        
+        self.ui.doubleSpinBox_min_Jat.setValue(variacoes["Jat"][0])
+        self.ui.doubleSpinBox_max_Jat.setValue(variacoes["Jat"][1])
+        
+        self.ui.doubleSpinBox_min_Bm.setValue(variacoes["Bm"][0])
+        self.ui.doubleSpinBox_max_Bm.setValue(variacoes["Bm"][1])
+        
+        self.ui.doubleSpinBox_min_Ksw.setValue(variacoes["Ksw"][0])
+        self.ui.doubleSpinBox_max_Ksw.setValue(variacoes["Ksw"][1])
+        
+        self.ui.doubleSpinBox_min_kt.setValue(variacoes["kt"][0])
+        self.ui.doubleSpinBox_max_kt.setValue(variacoes["kt"][1])
+        
+        self.ui.doubleSpinBox_min_Rjan.setValue(variacoes["Rjan"][0])
+        self.ui.doubleSpinBox_max_Rjan.setValue(variacoes["Rjan"][1])
+        
+        self.ui.doubleSpinBox_min_rel.setValue(variacoes["rel"][0])
+        self.ui.doubleSpinBox_max_rel.setValue(variacoes["rel"][1])
+        
+        constantes = __json["constantes"]
+        
+        self.ui.combo_box_tipo_conexao.setCurrentText(constantes["conexao"])
+        self.ui.lineEdit_Ke.setText(str(constantes["Ke"]))
+        self.ui.lineEdit_potencia_trafo.setText(str(constantes["S"]))
+        self.ui.spinBox_n_fases.setValue(constantes["Nfases"])
+        self.ui.spinBox_frequencia_hz.setValue(constantes["f"])
+        self.ui.lineEdit_tensao_primario.setText(str(constantes["V1"]))
+        self.ui.lineEdit_tensao_secundario.setText(str(constantes["V2"]))
+        self.ui.combo_box_tipo_refrigeracao.setCurrentText(constantes["tipo"])
+        self.ui.lineEdit_densidade_fe.setText(str(constantes["Dfe"]))
+        self.ui.lineEdit_densidade_al.setText(str(constantes["Dal"]))
+        
+        if limpar_nome:
+           self.ui.label_novo_nome_do_json_adicionado.setText("")
+            
         
         # import ipdb; ipdb.set_trace(context=10)
+    
+    def __get_json(self):
+        dados = {}
         
+        dados["max_geracoes"] = self.ui.spinBox_numero_max_geracoes.value()
+        dados["numero_populacao"] = self.ui.spinBox_max_individuos_populacao.value()
+        
+        constantes = {}
+        constantes["taxa_mutacao"] = self.ui.doubleSpinBox_taxa_mutacao.value() / 100
+        constantes["taxa_crossover"] = self.ui.doubleSpinBox_taxa_crossover.value() / 100
+        constantes["n_frentes"] = self.ui.spinBox_numero_frentes_selecionar.value()
+        
+        dados["constantes_ag"] = constantes
+        
+        variacoes = {}
+        variacoes["Jbt"] = [
+            self.ui.doubleSpinBox_min_Jbt.value(),
+            self.ui.doubleSpinBox_max_Jbt.value()
+        ]
+        variacoes["Jat"] = [
+            self.ui.doubleSpinBox_min_Jat.value(),
+            self.ui.doubleSpinBox_max_Jat.value()
+        ]
+        variacoes["Bm"] = [
+            self.ui.doubleSpinBox_min_Bm.value(),
+            self.ui.doubleSpinBox_max_Bm.value()
+        ]
+        variacoes["Ksw"] = [
+            self.ui.doubleSpinBox_min_Ksw.value(),
+            self.ui.doubleSpinBox_max_Ksw.value()
+        ]
+        variacoes["kt"] = [
+            self.ui.doubleSpinBox_min_kt.value(),
+            self.ui.doubleSpinBox_max_kt.value()
+        ]
+        variacoes["Rjan"] = [
+            self.ui.doubleSpinBox_min_Rjan.value(),
+            self.ui.doubleSpinBox_max_Rjan.value()
+        ]
+        variacoes["rel"] = [
+            self.ui.doubleSpinBox_min_rel.value(),
+            self.ui.doubleSpinBox_max_rel.value()
+        ]
+        
+        dados["variacoes"] = variacoes
+        
+        constantes = {}
+        constantes["conexao"] = self.ui.combo_box_tipo_conexao.currentText()
+        constantes["Ke"] = self.ui.lineEdit_Ke.text()
+        constantes["S"] = self.ui.lineEdit_potencia_trafo.text()
+        constantes["Nfases"] = self.ui.spinBox_n_fases.value()
+        constantes["f"] = self.ui.spinBox_frequencia_hz.value()
+        constantes["V1"] = self.ui.lineEdit_tensao_primario.text()
+        constantes["V2"] = self.ui.lineEdit_tensao_secundario.text()
+        constantes["tipo"] = self.ui.combo_box_tipo_refrigeracao.currentText()
+        constantes["Dfe"] = self.ui.lineEdit_densidade_fe.text()
+        constantes["Dal"] = self.ui.lineEdit_densidade_fe.text()
+        
+        dados["constantes"] = constantes
+        # x = json.load(open(r"C:\Users\dacon\git\TrafoTCC\tests\json\AG\ag.json"))
+        # import ipdb; ipdb.set_trace(context=10)
+        return dados
+    
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
