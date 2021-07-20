@@ -8,20 +8,20 @@ from PyQt5.QtWidgets import (
         QMessageBox 
     )
 
-from qt_material import apply_stylesheet
+from qt_material import apply_stylesheet, QtStyleTools, list_themes
 
 from main import Ui_MainWindow
 
-class MainWindow(QMainWindow):
-    def __init__(self, app, *args, **kwargs):
+class MainWindow(QMainWindow, QtStyleTools):
+    def __init__(self, app, tema="dark_cyan", *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.temas = dict(zip(map(lambda nome: " ".join(os.path.splitext(nome)[0].split("_")), list_themes()), list_themes()))
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        apply_stylesheet(app, "dark_cyan.xml")
         
         ##nao sei mais o que estou fazendo kkk
-        
         # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.shadow = QtWidgets.QGraphicsDropShadowEffect(self)
         self.shadow.setBlurRadius(50)
@@ -35,13 +35,14 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Trafo App")
         
         # QtWidgets.QSizeGrip(self.ui.size_gripe)
-        self.init_ui()
         
+        self.tema = tema.replace("_", " ")
+        self.app = app
+        self.init_ui()
+        apply_stylesheet(app, self.temas[self.tema])
         self.show()
     
     def init_ui(self):
-        self.ui.botao_menu_home.clicked.connect(lambda *args, **wargs: print(args, wargs))
-        
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
         self.ui.label_titulo_app.setText("App Trafo")
         
@@ -63,7 +64,6 @@ class MainWindow(QMainWindow):
                 self.ui.label_titulo_app.setText("Histórico de Execuções"),
             )
         )
-        
         self.ui.botao_info_home.clicked.connect(
             lambda: (
                 self.ui.stackedWidget.setCurrentWidget(self.ui.page_info),
@@ -78,9 +78,11 @@ class MainWindow(QMainWindow):
         self.ui.botao_novo_salvar.clicked.connect(
             lambda: self.salvar_json(file_name="")
         )
-    
         self.ui.botao_novo_limpar.clicked.connect(
             lambda: self.__carregar_json(None, "")
+        )
+        self.ui.botao_novo_run.clicked.connect(
+            lambda: print("Foi")
         )
         
         #carrega combo_box
@@ -90,7 +92,24 @@ class MainWindow(QMainWindow):
         self.ui.combo_box_tipo_conexao.addItem("delta-delta")
         
         self.ui.combo_box_tipo_refrigeracao.addItem("seco")
-        self.ui.combo_box_tipo_refrigeracao.addItem("óleo")
+        self.ui.combo_box_tipo_refrigeracao.addItem("oleo")
+        
+        self.ui.comboBox_themes.addItem(self.tema)
+        
+        def f(nome):
+            nome, _ = os.path.splitext(nome)
+            return " ".join(nome.split("_"))
+        
+        self.ui.comboBox_themes.addItems(self.temas.keys())
+        
+        self.ui.comboBox_themes.currentTextChanged.connect(
+            lambda tema: (
+                self.ui.comboBox_themes.setCurrentText(tema),
+                apply_stylesheet(self.app, self.temas[tema])
+            )
+        )
+        
+        # import ipdb; ipdb.set_trace(context=10)
         
          #Aplica validadores nos campos lineEdit
         self.ui.lineEdit_Ke.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
@@ -113,11 +132,14 @@ class MainWindow(QMainWindow):
             path = r"C:\Users\dacon\git\TrafoTCC\GUI"
             file = QFileDialog.getSaveFileName(self, "Save File", path, "json file (*.json)")
             file_name = file[0]
+            # import ipdb; ipdb.set_trace(context=10)
+            if file_name == "":
+                return
+            
         dados = self.__get_json()
         with open(file_name, "w") as file:
             json.dump(dados, file, indent=4)
             
-            # import ipdb; ipdb.set_trace(context=10)
     
     def seleciona_json(self, *args, **kwargs):
         # print("clicando", args)
@@ -269,8 +291,14 @@ class MainWindow(QMainWindow):
         return dados
     
 if __name__ == "__main__":
+    cor1, cor2, cor3, cor4, cor5 = ("#1D1B59", "#363973", "#253259", "#38F2F2", "#591202")
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    
+    os.environ["QTMATERIAL_PRIMARYCOLOR"] = cor1
+    os.environ["QTMATERIAL_PRIMARYTEXTCOLOR"] = cor5
+    
+    
     win = MainWindow(app)
     win.show()
     sys.exit(app.exec_())

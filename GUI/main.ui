@@ -82,78 +82,6 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QFrame" name="frame_botao_menu">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>160</width>
-        <height>50</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>160</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>160</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="botao_menu_home">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/icons/svg/ic_menu_48px.svg</normaloff>:/icons/svg/ic_menu_48px.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignLeft">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>MENU</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QFrame" name="frame_botoes_menu">
       <property name="geometry">
        <rect>
@@ -3156,10 +3084,10 @@ text-align:&quot;center&quot;;</string>
     <widget class="QFrame" name="botao_menu_6">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>0</y>
-       <width>381</width>
-       <height>51</height>
+       <width>341</width>
+       <height>50</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -3211,6 +3139,70 @@ text-align:&quot;center&quot;;</string>
          <string>App Trafo</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QFrame" name="frame_botao_menu">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>200</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_titulo_app_31">
+        <property name="maximumSize">
+         <size>
+          <width>75</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Tema</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox_themes"/>
       </item>
      </layout>
     </widget>

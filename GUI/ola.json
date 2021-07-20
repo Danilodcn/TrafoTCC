@@ -1,51 +1,51 @@
 {
-    "max_geracoes": 0,
-    "numero_populacao": 0,
+    "max_geracoes": 30,
+    "numero_populacao": 40,
     "constantes_ag": {
-        "taxa_mutacao": 0.0,
-        "taxa_crossover": 0.0,
-        "n_frentes": 0
+        "taxa_mutacao": 0.6,
+        "taxa_crossover": 0.4,
+        "n_frentes": 1
     },
     "variacoes": {
         "Jbt": [
-            0.0,
-            0.0
+            1.2,
+            1.4
         ],
         "Jat": [
-            0.0,
-            0.0
+            1.4,
+            1.6
         ],
         "Bm": [
-            0.0,
-            0.0
+            1.5,
+            1.6
         ],
         "Ksw": [
-            0.0,
-            0.0
+            6.0,
+            7.0
         ],
         "kt": [
-            0.0,
-            0.0
+            0.45,
+            0.55
         ],
         "Rjan": [
-            0.0,
-            0.0
+            3.4,
+            3.6
         ],
         "rel": [
-            0.0,
-            0.0
+            1.1,
+            1.2
         ]
     },
     "constantes": {
         "conexao": "delta-estrela",
-        "Ke": "0",
-        "S": "0",
-        "Nfases": 1,
-        "f": 0,
-        "V1": "0",
-        "V2": "0",
+        "Ke": "0.945",
+        "S": "150.0",
+        "Nfases": 3,
+        "f": 60,
+        "V1": "0.22",
+        "V2": "13.8",
         "tipo": "seco",
-        "Dfe": "0",
-        "Dal": "0"
+        "Dfe": "7650",
+        "Dal": "7650"
     }
 }
