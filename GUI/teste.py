@@ -1,4 +1,6 @@
-import sys, os, json
+import sys, os, json, time
+# print(sys.path)
+sys.path.insert(0, os.path.abspath(os.curdir))
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (
@@ -11,6 +13,39 @@ from PyQt5.QtWidgets import (
 from qt_material import apply_stylesheet, QtStyleTools, list_themes
 
 from main import Ui_MainWindow
+
+# import ipdb; ipdb.set_trace()
+from AG import AG
+
+class Worker(QtCore.QObject):
+    finished = QtCore.pyqtSignal()
+    progress = QtCore.pyqtSignal(int)
+    response = QtCore.pyqtSignal(set)
+    
+    def __init__(self, dados, *args, **kw):
+        super(Worker, self).__init__(*args, **kw)
+        self.dados = dados
+    
+    def run(self):
+        self.ag = AG.AG(**self.dados)
+        
+        max_gen = self.dados["max_geracoes"]
+        gen = self.ag.run()
+        # import ipdb; ipdb.set_trace()
+        i = 0
+        while(True):
+            i += 1
+            try:
+                geracao = next(gen)
+            except:
+                # import ipdb; ipdb.set_trace()
+                break
+                
+            self.progress.emit(i)
+            
+        self.finished.emit()
+        self.response.emit(self.ag.populacao.individuos)
+        
 
 class MainWindow(QMainWindow, QtStyleTools):
     def __init__(self, app, tema="dark_cyan", *args, **kwargs):
@@ -82,7 +117,7 @@ class MainWindow(QMainWindow, QtStyleTools):
             lambda: self.__carregar_json(None, "")
         )
         self.ui.botao_novo_run.clicked.connect(
-            lambda: print("Foi")
+            lambda: self.run_algoritmo_genetico()
         )
         
         #carrega combo_box
@@ -125,6 +160,46 @@ class MainWindow(QMainWindow, QtStyleTools):
         
         #Inicializa a tela NOVO
         self.__carregar_json()
+
+    def reportar_progresso(self, n):
+        print("Thredinng geração: ", n)
+    
+    def reportar_finalizacao(self, individuos="individuo Vazio"):
+        tempo_decorrido = time.time() - self.comecou_executar
+        print(individuos)
+        # import ipdb; ipdb.set_trace(context=10)
+        ag = AG.AG(**self.dados)
+        ag.populacao.individuos = individuos
+        n_geracao = ag.geracao_atual
+        print("Demorou: " ,tempo_decorrido)
+        ag.populacao.gerar_grafico(True, debug=3, titulo="Resposta ao AG", geracao=n_geracao)
+        
+
+    def run_algoritmo_genetico(self):
+        self.dados = self.__get_json()
+        # ag = AG.AG(**dados)
+        # max_geracoes = dados["max_geracoes"]
+        # ag.run(max_geracoes)
+        # import ipdb; ipdb.set_trace(context=10)
+        self.thread = QtCore.QThread()
+        self.worker = Worker(self.dados)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.progress.connect(self.reportar_progresso)
+        self.worker.response.connect(self.reportar_finalizacao)
+        self.comecou_executar = time.time()
+        self.thread.start()
+        self.ui.botao_novo_run.setEnabled(False)
+        self.thread.finished.connect(
+            lambda: self.ui.botao_novo_run.setEnabled(True)
+        )
+        self.thread.finished.connect(
+            lambda: print("Finalizou a Thread")
+        )
+        
         
     def salvar_json(self, file_name=""):
         if file_name == "":
@@ -275,30 +350,26 @@ class MainWindow(QMainWindow, QtStyleTools):
         
         constantes = {}
         constantes["conexao"] = self.ui.combo_box_tipo_conexao.currentText()
-        constantes["Ke"] = self.ui.lineEdit_Ke.text()
-        constantes["S"] = self.ui.lineEdit_potencia_trafo.text()
+        constantes["Ke"] = float(self.ui.lineEdit_Ke.text())
+        constantes["S"] = float(self.ui.lineEdit_potencia_trafo.text())
         constantes["Nfases"] = self.ui.spinBox_n_fases.value()
-        constantes["f"] = self.ui.spinBox_frequencia_hz.value()
-        constantes["V1"] = self.ui.lineEdit_tensao_primario.text()
-        constantes["V2"] = self.ui.lineEdit_tensao_secundario.text()
+        constantes["f"] = float(self.ui.spinBox_frequencia_hz.value())
+        constantes["V1"] = float(self.ui.lineEdit_tensao_primario.text())
+        constantes["V2"] = float(self.ui.lineEdit_tensao_secundario.text())
         constantes["tipo"] = self.ui.combo_box_tipo_refrigeracao.currentText()
-        constantes["Dfe"] = self.ui.lineEdit_densidade_fe.text()
-        constantes["Dal"] = self.ui.lineEdit_densidade_fe.text()
+        constantes["Dfe"] = float(self.ui.lineEdit_densidade_fe.text())
+        constantes["Dal"] = float(self.ui.lineEdit_densidade_al.text())
         
         dados["constantes"] = constantes
         # x = json.load(open(r"C:\Users\dacon\git\TrafoTCC\tests\json\AG\ag.json"))
         # import ipdb; ipdb.set_trace(context=10)
+        
         return dados
     
 if __name__ == "__main__":
-    cor1, cor2, cor3, cor4, cor5 = ("#1D1B59", "#363973", "#253259", "#38F2F2", "#591202")
+    # cor1, cor2, cor3, cor4, cor5 = ("#1D1B59", "#363973", "#253259", "#38F2F2", "#591202")
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    
-    os.environ["QTMATERIAL_PRIMARYCOLOR"] = cor1
-    os.environ["QTMATERIAL_PRIMARYTEXTCOLOR"] = cor5
-    
-    
     win = MainWindow(app)
     win.show()
     sys.exit(app.exec_())

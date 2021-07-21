@@ -55,7 +55,7 @@ class Trafo(object):
         conexao:list = self.constantes["conexao"].split("-")
         # from ipdb import set_trace; set_trace()
         secundario, primario = conexao
-
+        # import ipdb; ipdb.set_trace()
         V1 = self.constantes["V1"]
         V2 = self.constantes["V2"]
 

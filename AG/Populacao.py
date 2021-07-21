@@ -134,7 +134,7 @@ class Populacao(object):
         
         plt.legend()
         # print(len(self.individuos))
-        # plt.show()
+        plt.show()
         # import ipdb; ipdb.set_trace()
         
     def separa_dominantes(self, individuos: list=None):
@@ -216,7 +216,7 @@ class Populacao(object):
             self.individuos = self.selecao(
                 n_selecionados=numero_individuos,
                 n_frentes=n_frentes,
-            )
+        )
     
     
     def selecao(self, individuos: list=None, n_selecionados: int=0, n_frentes=3):

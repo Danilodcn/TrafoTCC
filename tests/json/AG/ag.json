@@ -1,5 +1,5 @@
 {
-    "max_geracoes": 30,
+    "max_geracoes": 20,
     "numero_populacao": 40,
     
     "constantes_ag":{

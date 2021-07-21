@@ -75,4 +75,12 @@ class AG():
             n_selecionados=self.numero_populacao,
             n_frentes=8,
         )
+        
+    def run(self):
+        self.gerar_populacao_inicial(3)
+        for geracao in range(1, self.max_geracoes + 1):
+            print("geração: ", geracao)
+            # import ipdb; ipdb.set_trace()
+            self.run_geracao(geracao)
+            yield geracao
 
