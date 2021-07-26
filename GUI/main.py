@@ -839,11 +839,11 @@ class Ui_MainWindow(object):
         self.label_titulo_app_16.setStyleSheet("font: 75 12pt \"Arial\";")
         self.label_titulo_app_16.setObjectName("label_titulo_app_16")
         self.horizontalLayout_25.addWidget(self.label_titulo_app_16, 0, QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.spinBox_frequencia_hz = QtWidgets.QSpinBox(self.botao_menu_23)
+        self.spinBox_frequencia_hz = QtWidgets.QDoubleSpinBox(self.botao_menu_23)
         self.spinBox_frequencia_hz.setMaximumSize(QtCore.QSize(90, 16777215))
-        self.spinBox_frequencia_hz.setMinimum(0)
-        self.spinBox_frequencia_hz.setMaximum(200)
-        self.spinBox_frequencia_hz.setProperty("value", 60)
+        self.spinBox_frequencia_hz.setDecimals(1)
+        self.spinBox_frequencia_hz.setMaximum(200.0)
+        self.spinBox_frequencia_hz.setSingleStep(1.0)
         self.spinBox_frequencia_hz.setObjectName("spinBox_frequencia_hz")
         self.horizontalLayout_25.addWidget(self.spinBox_frequencia_hz)
         self.verticalLayout_3.addWidget(self.botao_menu_23)
@@ -1092,7 +1092,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(1)
-        self.tab_widget_novo_dados.setCurrentIndex(0)
+        self.tab_widget_novo_dados.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

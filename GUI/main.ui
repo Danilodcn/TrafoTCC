@@ -612,7 +612,7 @@ font: 75 12pt &quot;Arial&quot;;</string>
         <string notr="true">font: 11pt &quot;Arial&quot;;</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="tab_widget_novo_dados_ag">
         <attribute name="title">
@@ -2485,21 +2485,21 @@ text-align:&quot;center&quot;;</string>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox_frequencia_hz">
+              <widget class="QDoubleSpinBox" name="spinBox_frequencia_hz">
                <property name="maximumSize">
                 <size>
                  <width>90</width>
                  <height>16777215</height>
                 </size>
                </property>
-               <property name="minimum">
-                <number>0</number>
+               <property name="decimals">
+                <number>1</number>
                </property>
                <property name="maximum">
-                <number>200</number>
+                <double>200.000000000000000</double>
                </property>
-               <property name="value">
-                <number>60</number>
+               <property name="singleStep">
+                <double>1.000000000000000</double>
                </property>
               </widget>
              </item>
