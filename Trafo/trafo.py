@@ -107,7 +107,9 @@ class Trafo(object):
         
         Ac = Et / (4.44 * f * Bm) * 1e6         # é a área efetiva da coluna  [mm2]
         Abc = Ac / Ke                           #  é a área bruta da coluna [mm2]
+        # import ipdb; ipdb.set_trace()
         numero_degraus = tabelas.tabela_2_3(Abc / 1000) # numero de degraus conforme a tabela 2.3 pg 44 tese
+        
         Ku, LD = tabelas.tabela_2_4(numero_degraus)     # Dimensões do núcleo em função do número de degraus. pg 48 tese
         LD = np.asarray(LD, np.float64)                 # LD é um vetor que contem todos os valores existentes na tabela 2.4
 
@@ -182,7 +184,7 @@ class Trafo(object):
 
         atc = tabelas.curva_BH(Bm)
         atj = tabelas.curva_BH(By)
-        
+        import ipdb; ipdb.set_trace()
         ATj = 2 * W * atj   # A força magnetomotriz na culatra [Ae]
         ATc = 3 * hw * atc  # A força magnetomotriz na coluna [Ae]
 

@@ -1,11 +1,19 @@
 import itertools as it
+from Trafo.CONSTANTES import VARIAVEIS
 
 try:
     from .Populacao import Populacao
     from .Individuo import Individuo
+    # Trafo.CONSTANTES import VARIAVEIS
 except ImportError:
+    # import ipdb; ipdb.set_trace()
     from Populacao import Populacao
     from Individuo import Individuo
+    # from Trafo.CONSTANTES import VARIAVEIS
+
+# input(VARIAVEIS)
+import pandas as pd
+
 
 class AG():
     def __init__(self, **kwargs):
@@ -77,10 +85,39 @@ class AG():
         )
         
     def run(self):
+        # file = "individuos.xlsx"
+        names = ["Id"] + list(VARIAVEIS.keys()) + ["PerdasT", "Mativa"]
+        self.df = pd.DataFrame(columns=names)
+
+        # import ipdb; ipdb.set_trace()
+        # self.df = pd.read_excel(file)
+
         self.gerar_populacao_inicial(3)
+
+        # ind = self.populacao.individuos.copy()
+
+        # for i in ind:
+        #     var = [int(i.id)] + list(i.variaveis)
+        #     self.df.loc[-1] = var
+        #     self.df.index += 1
+        #     self.df.sort_index()
+
         for geracao in range(1, self.max_geracoes + 1):
             print("geração: ", geracao)
             # import ipdb; ipdb.set_trace()
             self.run_geracao(geracao)
+            ind = self.populacao.individuos.copy()
+
+            for i in ind:
+                obj = i.calcular_objetivos(penalidade=False)
+
+                var = [int(i.id)] + list(i.variaveis) + list(obj)
+                self.df.loc[-1] = var
+                self.df.index += 1
+                self.df.sort_index()
+
+            # import ipdb; ipdb.set_trace()
             yield geracao
+
+        # import ipdb; ipdb.set_trace()
 

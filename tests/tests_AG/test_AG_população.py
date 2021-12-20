@@ -145,7 +145,7 @@ class Teste_AG_População(TestCase):
             )
             pass
 
-        populacao.mutacao(qtd=20, taxa=.4, n_frentes=3)
+        populacao.mutacao(numero_individuos=populacao.numero_populacao, qtd=20, taxa=.4, n_frentes=3)
         if grafico:
             populacao.gerar_grafico(
                 separado=False, 

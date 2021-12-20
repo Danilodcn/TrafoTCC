@@ -16,9 +16,13 @@ scipy = "*"
 pyqt5 = "*"
 pyqtgraph = "*"
 qt-material = "*"
+seaborn = "*"
+openpyxl = "*"
+scikit-learn = "*"
 
 [dev-packages]
 pylint = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.9"

@@ -37,22 +37,23 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
     def teste_plotagem_das_duas_primeiras_gerações(self):
         dados = load(open(self.teste, "r"))
         ag = AG(**dados)
-        for i in range(5):
-            print("testagem: ", i)
-            # ag.gerar_populacao_inicial(3)
-            ag.run_geracao(i+1)
-        grafico = self.config["grafico"]
-        # ag.run_geracao(1)
+        if self.config["grafico"]:
+            for i in range(5):
+                print("testagem: ", i)
+                # ag.gerar_populacao_inicial(3)
+                ag.run_geracao(i+1)
+            grafico = self.config["grafico"]
+            # ag.run_geracao(1)
+            
+            fig, ax = plt.subplots()
+            ag.populacao.gerar_grafico(
+                separado=True,
+                debug=3,
+                titulo="AG na 1º geração",
+                fig=fig, ax=ax,
+                geracao=1
+            )
         
-        fig, ax = plt.subplots()
-        ag.populacao.gerar_grafico(
-            separado=True,
-            debug=3,
-            titulo="AG na 1º geração",
-            fig=fig, ax=ax,
-            geracao=1
-        )
-        
-        # plt.ylim([1700, 2050])
-        # plt.xlim([480, 650])
-        plt.show()
+            # plt.ylim([1700, 2050])
+            # plt.xlim([480, 650])
+            plt.show()

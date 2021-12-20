@@ -40,9 +40,23 @@ class Worker(QtCore.QObject):
             except:
                 # import ipdb; ipdb.set_trace()
                 break
-                
-            self.progress.emit(i)
             
+            self.progress.emit(i)
+        
+        # import ipdb; ipdb.set_trace()
+        
+        file = "individuos.xlsx"
+        try:
+            import pandas as pd
+            antes = pd.read_excel(file,  index_col=0)
+            depois = pd.concat([antes, self.ag.df])
+            depois.sort_index(ascending=False)
+            depois.to_excel(file)
+        except:
+            depois = self.ag.df
+            depois.to_excel(file)
+        # self.ag.df.to_excel(file)
+        
         self.finished.emit()
         self.response.emit(self.ag.populacao.individuos)
         
