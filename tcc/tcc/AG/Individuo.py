@@ -1,20 +1,20 @@
 from typing import List
-# from itertools import compress
-import numpy.random as rd
+
 import numpy as np
 
+# from itertools import compress
+import numpy.random as rd
 
+from tcc.AG.funcoes import e_dominado, verifica_dominancia
+from tcc.trafo.CONSTANTES import CONSTANTES_DADAS, VARIACOES, VARIAVEIS
 from tcc.trafo.trafo import Trafo
-from tcc.trafo.CONSTANTES import VARIAVEIS, CONSTANTES_DADAS, VARIACOES
-from tcc.AG.funcoes import verifica_dominancia, e_dominado
-    
 
 
 class Individuo(object):
     numero_identificao = 0
     trafo = Trafo(CONSTANTES_DADAS)
-    
-    def __init__(self, variaveis: dict=None, variacoes: dict=None):
+
+    def __init__(self, variaveis: dict = None, variacoes: dict = None):
         Individuo.numero_identificao += 1
         self.id = Individuo.numero_identificao
         texto = 'O argumento "variaveis" ou "variacoes" deve ser um dicionário válido'
@@ -23,7 +23,7 @@ class Individuo(object):
         self.max_variacoes = [i[1] for i in self.variacoes.values()]
         self.min_variacoes = [i[0] for i in self.variacoes.values()]
         # import ipdb; ipdb.set_trace()
-        
+
         try:
             e_vazio = variaveis == None
             try:
@@ -31,23 +31,29 @@ class Individuo(object):
                 # import ipdb; ipdb.set_trace()
             except Exception as e:
                 print("Error: ", e)
-                import ipdb; ipdb.set_trace()
-                
+                import ipdb
+
+                ipdb.set_trace()
+
         except:
             e_vazio = False
-        
+
         if e_vazio:
-            if not isinstance(variacoes, dict): 
+            if not isinstance(variacoes, dict):
                 raise ValueError(texto)
             self.variaveis = self._gera_variaveis_aleatoriamente(variacoes)
             self.nomes = list(variacoes.keys())
-        elif isinstance(variaveis, list) or isinstance(variaveis, tuple) or isinstance(variaveis, np.ndarray):
+        elif (
+            isinstance(variaveis, list)
+            or isinstance(variaveis, tuple)
+            or isinstance(variaveis, np.ndarray)
+        ):
             self.variaveis = np.asarray(variaveis)
             self.nomes = list(variacoes.keys())
         else:
             self.variaveis = np.asarray(list(variaveis.values()))
             self.nomes = list(variaveis.keys())
-        
+
     def __eq__(self, o):
         if not isinstance(o, Individuo):
             return False
@@ -55,7 +61,7 @@ class Individuo(object):
 
     def __len__(self):
         return len(self.variaveis)
-    
+
     def __hash__(self):
         return hash(tuple(self.calcular_objetivos()))
 
@@ -74,44 +80,54 @@ class Individuo(object):
         return variaveis
 
     def calcular_objetivos(self, penalidade=True):
-        self.objetivos = Individuo.trafo.run(self.variaveis, penalidade=penalidade)            
+        self.objetivos = Individuo.trafo.run(
+            self.variaveis, penalidade=penalidade
+        )
         return self.objetivos
 
     @staticmethod
     def set_constantes_trafo(constantes: dict, constantes_dadas: dict):
-        dados = Individuo.trafo.inicia_as_variaveis(constantes_dadas, constantes)
+        dados = Individuo.trafo.inicia_as_variaveis(
+            constantes_dadas, constantes
+        )
         Individuo.trafo.constantes = dados
         Individuo.trafo.calculo_de_dados_do_trafo()
 
     def crossover_aritmetico(self, pai):
         alfa = rd.rand(*self.variaveis.shape)
         alfa = alfa / np.linalg.norm(alfa)
-        
+
         filho_1 = alfa * self.variaveis + (1 - alfa) * pai.variaveis
         filho_2 = (1 - alfa) * self.variaveis + alfa * pai.variaveis
-        
+
         # import ipdb; ipdb.set_trace()
-        filho_1 = Individuo(variaveis=filho_1, variacoes=self.variacoes,)
-        filho_2 = Individuo(variaveis=filho_2, variacoes=self.variacoes,)
-        
+        filho_1 = Individuo(
+            variaveis=filho_1,
+            variacoes=self.variacoes,
+        )
+        filho_2 = Individuo(
+            variaveis=filho_2,
+            variacoes=self.variacoes,
+        )
+
         numero, filho = verifica_dominancia(filho_1, filho_2)
-        
+
         if numero == 0:
             return filho[round(rd.rand())]
-        else: 
+        else:
             return filho[0]
 
     def crossover_heuristico(self, pai):
         r = rd.rand(*self.variaveis.shape)
         r = r / np.linalg.norm(r)
-        
+
         filho_1 = r * (self.variaveis - pai.variaveis) + self.variaveis
         filho_1 = Individuo(variaveis=filho_1, variacoes=self.variacoes)
-        
+
         # import ipdb; ipdb.set_trace()
         return filho_1
 
-    def mutacao_uniforme(self, taxa: float=1):
+    def mutacao_uniforme(self, taxa: float = 1):
         r = rd.rand(*self.variaveis.shape)
         escolha = r < taxa
         variaveis = self._gera_variaveis_aleatoriamente(self.variacoes)
@@ -119,9 +135,9 @@ class Individuo(object):
         for i, value in enumerate(variaveis):
             if escolha[i]:
                 variaveis_atuais[i] = value
-        
+
         # import ipdb; ipdb.set_trace()
-        
+
         filho = Individuo(variaveis=variaveis_atuais, variacoes=self.variacoes)
-    
+
         return filho

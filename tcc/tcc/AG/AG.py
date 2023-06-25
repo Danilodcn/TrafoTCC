@@ -1,13 +1,13 @@
 import itertools as it
-from tcc.trafo.CONSTANTES import VARIAVEIS
-
-from tcc.AG.Populacao import Populacao
-from tcc.AG.Individuo import Individuo
 
 import pandas as pd
 
+from tcc.AG.Individuo import Individuo
+from tcc.AG.Populacao import Populacao
+from tcc.trafo.CONSTANTES import VARIAVEIS
 
-class AG():
+
+class AG:
     def __init__(self, **kwargs):
         # import ipdb; ipdb.set_trace()
         self.variacoes = kwargs["variacoes"]
@@ -15,27 +15,26 @@ class AG():
         self.constantes = kwargs["constantes"]
         self.max_geracoes = kwargs["max_geracoes"]
         self.constantes_ag = kwargs["constantes_ag"]
-        
+
         self.geracao_atual = 0
-        
+
         # import ipdb; ipdb.set_trace()
         self.startUp()
         # self.run_geracao()
-        
+
     def startUp(self):
         # Individuo.trafo.constantes = self.constantes
         # Individuo.trafo.calculo_de_dados_do_trafo()
-        
+
         self.populacao = Populacao(
             constantes=self.constantes,
             numero_populacao=self.numero_populacao,
-            variacoes=self.variacoes
+            variacoes=self.variacoes,
         )
-    
-        
+
     def run_geracao(self, geracao):
         self.geracao_atual = geracao
-        #Inicia Selecionando os Indivíduos para o cruzamento
+        # Inicia Selecionando os Indivíduos para o cruzamento
         # import ipdb; ipdb.set_trace()
         taxa_crossover = self.constantes_ag["taxa_crossover"]
         taxa_mutacao = self.constantes_ag["taxa_mutacao"]
@@ -49,14 +48,14 @@ class AG():
             numero_individuos=n_populacao,
             n_frentes=n_frentes,
         )
-        
+
         # # import ipdb; ipdb.set_trace(context=10)
         self.populacao.crossover_aritmetico(
             qtd_aritmetico=n_individuos_para_crossover,
             numero_individuos=n_populacao,
             n_frentes=n_frentes,
         )
-        
+
         # self.populacao.mutacao(
         #     qtd=n_populacao,
         #     numero_individuos=0,
@@ -64,18 +63,20 @@ class AG():
         #     n_frentes=n_frentes,
         # )
         # # import ipdb; ipdb.set_trace(context=10)
-        
+
         # self.populacao.crossover_heuristico(qtd_heuristico, numero_individuos)
         # import ipdb; ipdb.set_trace(context=20)
-    
+
     def gerar_populacao_inicial(self, n):
-        individuos = it.chain(*(self.populacao.gera_individuos() for i in range(n)))
+        individuos = it.chain(
+            *(self.populacao.gera_individuos() for i in range(n))
+        )
         self.populacao.individuos.update(individuos)
         self.populacao.individuos = self.populacao.selecao(
             n_selecionados=self.numero_populacao,
             n_frentes=8,
         )
-        
+
     def run(self):
         # file = "individuos.xlsx"
         names = ["Id"] + list(VARIAVEIS.keys()) + ["PerdasT", "Mativa"]
@@ -112,4 +113,3 @@ class AG():
             yield geracao
 
         # import ipdb; ipdb.set_trace()
-

@@ -1,12 +1,14 @@
-import click
-from unittest import TestLoader, runner
 import unittest
 from json import dump
+from unittest import TestLoader, runner
+
+import click
 
 
 @click.group()
 def c():
     ...
+
 
 @c.command()
 def tests():
@@ -15,51 +17,57 @@ def tests():
     testrunner = runner.TextTestRunner()
     testrunner.run(test)
 
+
 @c.command()
 @click.option(
     "-t",
-    required=False, 
+    required=False,
     type=int,
-    help='realiza os testes usando o arquivo "teste_{n}.json"'
-    )
+    help='realiza os testes usando o arquivo "teste_{n}.json"',
+)
 @click.option(
-    "-error", 
-    required=False, 
+    "-error",
+    required=False,
     type=float,
-    help='Erro máximo aceitável para os testes em %'
-    )
+    help="Erro máximo aceitável para os testes em %",
+)
 @click.option(
-    "-npop", 
-    required=False, 
-    type=int,
-    help='Número de indivíduos na população'
-    )
+    "-npop", required=False, type=int, help="Número de indivíduos na população"
+)
 @click.option(
-    "-v", "--verbose",
+    "-v",
+    "--verbose",
     required=False,
     is_flag=True,
     help="Modo verboso",
 )
 @click.option(
-    "-g", "grafico",
+    "-g",
+    "grafico",
     required=False,
     is_flag=True,
-    help="mostrar testes com gráficos"
+    help="mostrar testes com gráficos",
 )
 @click.option(
     "--ag",
     required=False,
     is_flag=True,
-    help="Realizar apenas os testes referentes ao própria implementação do AG"
+    help="Realizar apenas os testes referentes ao própria implementação do AG",
 )
 def teste(t, error, verbose, npop, grafico, ag):
     """
-        Exemplo de uso: python manager.py teste -t 13 -error 0.001 -v
+    Exemplo de uso: python manager.py teste -t 13 -error 0.001 -v
     """
 
     print("==#==" * 22)
-    error /= 100            # TODO ola mundo, isso
-    config = {"n": t, "error": error, "npop": npop, "grafico": grafico, "ag": ag}
+    error /= 100  # TODO ola mundo, isso
+    config = {
+        "n": t,
+        "error": error,
+        "npop": npop,
+        "grafico": grafico,
+        "ag": ag,
+    }
     dump(config, open("tests/config.json", "w"))
     loader = TestLoader()
     test = loader.discover("tests/")
