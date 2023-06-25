@@ -11,7 +11,6 @@ DADO = {}
 
 
 def info(*args):
-    # import ipdb; ipdb.set_trace()
     try:
         name, d = args
     except:
@@ -40,15 +39,13 @@ if __name__ == "__main__":
 
     d = server.dict()
 
-    # import ipdb; ipdb.set_trace()
-
     p = Pool(10)
     arg = [(f"Pocess {i + 1}", 0.1) for i in range(300)]
     # print(arg)
     t0 = time()
     r = p.map_async(tempo, (*arg,))
     r.wait()
-    # import ipdb; ipdb.set_trace()
+
     r = r.get()
     t1 = time()
 

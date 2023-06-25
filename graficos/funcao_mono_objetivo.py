@@ -22,7 +22,7 @@ def f2(fig, ax):
     xx = np.linspace(min(r)*0.93, max(r)*1.04, 10000)
     p = np.poly1d(1)
     for r_i in r:
-        # import ipdb; ipdb.set_trace()
+
         
         p *= np.poly1d([1, -r_i])
     p = np.polyint(p)
@@ -83,7 +83,7 @@ def f3(fig, ax):
     xx = np.linspace(min(r)*0.93, max(r)*1.04, 10000)
     p = np.poly1d(1)
     for r_i in r:
-        # import ipdb; ipdb.set_trace()
+
         
         p *= np.poly1d([1, -r_i])
     d = p
@@ -144,7 +144,7 @@ def f3(fig, ax):
         v1 /= np.linalg.norm(v1)
         v1 *= y
         # print(np.linalg.norm(v1))
-        # import ipdb; ipdb.set_trace()
+
         plt.quiver([x], [p(x)] , [v1[0]], [v1[1]], angles="xy", scale_units="xy", scale=12, color="brown")
         s = np.sum(X) / len(X)
         plt.annotate('', xy=(x, p(x)), xytext=(s, p(s)*1.0017),
@@ -179,4 +179,3 @@ f3(fig, ax)
 plt.legend()
 plt.savefig("./graficos/plot_funcao_mono_objetivo_.png")
 plt.show()
-# import ipdb; ipdb.set_trace()

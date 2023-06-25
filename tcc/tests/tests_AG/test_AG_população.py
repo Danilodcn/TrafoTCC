@@ -28,7 +28,7 @@ class Teste_AG_Cria_População(TestCase):
             self.constantes, self.numero_populacao, variacoes=VARIACOES
         )
         try:
-            None  # import ipdb; ipdb.set_trace()
+            ...
         except Exception as error:
             texto_erro = f"Erro encontrado no Teste. Erro: {error}"
             self.assertTrue(False, msg=texto_erro)
@@ -50,7 +50,7 @@ class Teste_AG_População(TestCase):
         populacao = Populacao(
             self.constantes, self.numero_populacao, variacoes=VARIACOES
         )
-        # import ipdb; ipdb.set_trace()
+
         objetivos = populacao.calcular_objetivos()
         self.assertIsNotNone(objetivos)
 

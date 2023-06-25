@@ -22,8 +22,6 @@ def verifica_dominancia(i1, i2):
     else:
         return 2, [i2]
 
-    # import ipdb; ipdb.set_trace()
-
 
 def e_dominado(i1, i2=None):
     try:
@@ -50,13 +48,11 @@ def e_dominado(i1, i2=None):
 
 
 def distribui_argumentos(args):
-    # import ipdb; ipdb.set_trace()
     funcao, *args = args
     return funcao(*args)
 
 
 def distribui_argumentos_passando_tupla(args):
-    # import ipdb; ipdb.set_trace()
     funcao, *args = args
     # args = args[0]
     return funcao(*args[0])

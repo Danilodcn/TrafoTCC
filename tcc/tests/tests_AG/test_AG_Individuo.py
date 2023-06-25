@@ -24,14 +24,14 @@ class Teste_AG_Criação_Individuo(TestCase):
         try:
             ind = Individuo(variacoes=VARIACOES)
             ind_ = Individuo(self.variaveis, variacoes=VARIACOES)
-            # import ipdb; ipdb.set_trace()
+
         except Exception as e:
             msg = f"{__name__} >> Erro na criação do indivíduo: {e}"
             self.assertTrue(False, msg)
 
     def teste_calculo_dos_objetivos(self):
         ind = Individuo(self.variaveis, variacoes=VARIACOES)
-        # import ipdb; ipdb.set_trace()
+
         ind.set_constantes_trafo(self.json, CONSTANTES_DADAS)
         # x = Individuo.trafo.inicia_as_variaveis(CONSTANTES_DADAS, self.json)
         # Individuo.trafo.calculo_de_dados_do_trafo()
@@ -44,7 +44,7 @@ class Teste_AG_Criação_Individuo(TestCase):
 
         # ind = Individuo(variacoes=VARIACOES)
         # perda, massa = ind.calcula_objetivo()
-        # import ipdb; ipdb.set_trace()
+
         texto = "Houve um erro no cálculo em {}, {} != {}. Erro de {}%"
 
         self.assertTrue(
@@ -78,8 +78,6 @@ class Teste_AG_Criação_Individuo(TestCase):
             ),
         )
 
-        # import ipdb; ipdb.set_trace()
-
 
 class Teste_AG_Individuo(TestCase):
     def setUp(self):
@@ -95,12 +93,10 @@ class Teste_AG_Individuo(TestCase):
         self.individuo.set_constantes_trafo(self.json, CONSTANTES_DADAS)
 
     def teste_crossover_aritmético(self):
-        # import ipdb; ipdb.set_trace()
         individuos = [Individuo(variacoes=VARIACOES) for i in range(3)]
         i1, i2, i3 = individuos
         # x = [1.233292088175284,1.524191728787062,1.557370976484120,6.052077890285870,0.543120138460825,3.545732336335654,1.173784165379759]
         # i = Individuo(variaveis=x, variacoes=VARIACOES)
-        # import ipdb; ipdb.set_trace()
 
         filho_1_2 = i1.crossover_aritmetico(i2)
         filho_1_3 = i1.crossover_aritmetico(i3)
@@ -117,12 +113,10 @@ class Teste_AG_Individuo(TestCase):
         self.assertIsNotNone(filho_3_2)
 
     def teste_crossover_heuristico(self):
-        # import ipdb; ipdb.set_trace()
         individuos = [Individuo(variacoes=VARIACOES) for i in range(3)]
         i1, i2, i3 = individuos
         # x = [1.233292088175284,1.524191728787062,1.557370976484120,6.052077890285870,0.543120138460825,3.545732336335654,1.173784165379759]
         i = Individuo(variaveis=None, variacoes=VARIACOES)
-        # import ipdb; ipdb.set_trace()
 
         filho_1_2 = i1.crossover_heuristico(i2)
         filho_1_3 = i1.crossover_heuristico(i3)
@@ -165,16 +159,12 @@ class Teste_AG_Individuo(TestCase):
         assert_ = domina[0] == i2
         self.assertTrue(assert_)
 
-        # import ipdb; ipdb.set_trace()
-
     def teste_mutacao_do_individuo(self):
         # x = [1.233292088175284,1.524191728787062,1.557370976484120,6.052077890285870,0.543120138460825,3.545732336335654,1.173784165379759]
         i = Individuo(variaveis=None, variacoes=VARIACOES)
         #
-        # import ipdb; ipdb.set_trace()
+
         i.trafo.constantes
 
         filho = i.mutacao_uniforme(0.3)
         self.assertIsNotNone(filho)
-
-        # import ipdb; ipdb.set_trace()

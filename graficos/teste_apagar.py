@@ -52,7 +52,7 @@ print(a, b, c, d)
 f = lambda t: a * exp(b * t) + c * exp(d * t)
 
 yy = np.array(list(map(f, xx)))
-# import ipdb; ipdb.set_trace()
+
 
 plt.plot(xx, yy, "b-")
 

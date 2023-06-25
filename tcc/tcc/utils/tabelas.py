@@ -178,7 +178,6 @@ def teste():
         try:
             tabela["seco"][i]
         except:
-            # import ipdb; ipdb.set_trace()
             b, a = Ku[i - 1 : i + 1]
             tabela["seco"].append(a * tabela["seco"][i - 1] / b)
             tabela["oleo"].append(a * tabela["oleo"][i - 1] / b)
@@ -187,7 +186,6 @@ def teste():
 
 
 # teste()
-# import ipdb; ipdb.set_trace()
 
 
 def tabela_2_1(tipo: str, S: float, tensao: float) -> float:
@@ -259,7 +257,7 @@ def perda_magnetica_do_nucleo(Bm: float) -> float:
     p = tabelas["perda_magnetica"]["perdas"]
 
     P = interp(Bm, b, p)
-    # import ipdb; ipdb.set_trace()
+
     return P
 
 
@@ -268,8 +266,6 @@ def curva_BH(B: float):
 
     b = table["B"]
     h = table["H"]
-
-    # import ipdb; ipdb.set_trace()
 
     H = interp(B, b, h)
 
@@ -281,8 +277,6 @@ def curva_VA(B: float):
 
     b = table["B"]
     s = table["S"]
-
-    # import ipdb; ipdb.set_trace()
 
     S = interp(B, b, s)
 

@@ -22,13 +22,12 @@ class Individuo(object):
         self.variacoes = variacoes
         self.max_variacoes = [i[1] for i in self.variacoes.values()]
         self.min_variacoes = [i[0] for i in self.variacoes.values()]
-        # import ipdb; ipdb.set_trace()
 
         try:
             e_vazio = variaveis == None
             try:
                 e_vazio = np.all(e_vazio)
-                # import ipdb; ipdb.set_trace()
+
             except Exception as e:
                 print("Error: ", e)
                 import ipdb
@@ -75,7 +74,7 @@ class Individuo(object):
     def _gera_variaveis_aleatoriamente(self, variacoes: dict):
         # variaveis = [rd.uniform(i, j) for i, j in variacoes.values()]
         variaveis = rd.uniform(self.min_variacoes, self.max_variacoes)
-        # import ipdb; ipdb.set_trace()
+
         # return dict(zip(variacoes.keys(), variaveis))
         return variaveis
 
@@ -100,7 +99,6 @@ class Individuo(object):
         filho_1 = alfa * self.variaveis + (1 - alfa) * pai.variaveis
         filho_2 = (1 - alfa) * self.variaveis + alfa * pai.variaveis
 
-        # import ipdb; ipdb.set_trace()
         filho_1 = Individuo(
             variaveis=filho_1,
             variacoes=self.variacoes,
@@ -124,7 +122,6 @@ class Individuo(object):
         filho_1 = r * (self.variaveis - pai.variaveis) + self.variaveis
         filho_1 = Individuo(variaveis=filho_1, variacoes=self.variacoes)
 
-        # import ipdb; ipdb.set_trace()
         return filho_1
 
     def mutacao_uniforme(self, taxa: float = 1):
@@ -135,8 +132,6 @@ class Individuo(object):
         for i, value in enumerate(variaveis):
             if escolha[i]:
                 variaveis_atuais[i] = value
-
-        # import ipdb; ipdb.set_trace()
 
         filho = Individuo(variaveis=variaveis_atuais, variacoes=self.variacoes)
 

@@ -14,7 +14,7 @@ from qt_material import apply_stylesheet, QtStyleTools, list_themes
 
 from main import Ui_MainWindow
 
-# import ipdb; ipdb.set_trace()
+
 from AG import AG
 
 class Worker(QtCore.QObject):
@@ -31,19 +31,19 @@ class Worker(QtCore.QObject):
         
         max_gen = self.dados["max_geracoes"]
         gen = self.ag.run()
-        # import ipdb; ipdb.set_trace()
+
         i = 0
         while(True):
             i += 1
             try:
                 geracao = next(gen)
             except:
-                # import ipdb; ipdb.set_trace()
+
                 break
             
             self.progress.emit(i)
         
-        # import ipdb; ipdb.set_trace()
+
         
         file = "individuos.xlsx"
         try:
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow, QtStyleTools):
             )
         )
         
-        # import ipdb; ipdb.set_trace(context=10)
+
         
          #Aplica validadores nos campos lineEdit
         self.ui.lineEdit_Ke.setValidator(QtGui.QDoubleValidator(0, 1e12, 2))
@@ -181,7 +181,7 @@ class MainWindow(QMainWindow, QtStyleTools):
     def reportar_finalizacao(self, individuos="individuo Vazio"):
         tempo_decorrido = time.time() - self.comecou_executar
         print(individuos)
-        # import ipdb; ipdb.set_trace(context=10)
+
         ag = AG.AG(**self.dados)
         ag.populacao.individuos = individuos
         n_geracao = ag.geracao_atual
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow, QtStyleTools):
         # ag = AG.AG(**dados)
         # max_geracoes = dados["max_geracoes"]
         # ag.run(max_geracoes)
-        # import ipdb; ipdb.set_trace(context=10)
+
         self.thread = QtCore.QThread()
         self.worker = Worker(self.dados)
         self.worker.moveToThread(self.thread)
@@ -221,7 +221,7 @@ class MainWindow(QMainWindow, QtStyleTools):
             path = r"C:\Users\dacon\git\TrafoTCC\GUI"
             file = QFileDialog.getSaveFileName(self, "Save File", path, "json file (*.json)")
             file_name = file[0]
-            # import ipdb; ipdb.set_trace(context=10)
+
             if file_name == "":
                 return
             
@@ -257,7 +257,7 @@ class MainWindow(QMainWindow, QtStyleTools):
             error.exec_()
             # valor = error.exec_()
             # print("Valor clicado: ", valor)
-        # import ipdb; ipdb.set_trace(context=10)
+
             
 
     def __carregar_json(self, __json=None, file="", limpar_nome=True):
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow, QtStyleTools):
            self.ui.label_novo_nome_do_json_adicionado.setText("")
             
         
-        # import ipdb; ipdb.set_trace(context=10)
+
     
     def __get_json(self):
         dados = {}
@@ -376,7 +376,7 @@ class MainWindow(QMainWindow, QtStyleTools):
         
         dados["constantes"] = constantes
         # x = json.load(open(r"C:\Users\dacon\git\TrafoTCC\tests\json\AG\ag.json"))
-        # import ipdb; ipdb.set_trace(context=10)
+
         
         return dados
     

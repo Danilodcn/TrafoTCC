@@ -23,12 +23,11 @@ class TestTrafo(TestCase):
         self.config = load(open("tests/config.json", "r"))
         self.filename = "teste_{}.json".format(self.config["n"])
         self.error_aceitavel = self.config["error"]
-        # import ipdb; ipdb.set_trace()
 
     def teste_se_existe_json(self):
         "Testa se existe o arquivo JSON na pasta raiz do projeto"
         dirs = os.listdir(self.pathjson)
-        # import ipdb; ipdb.set_trace()
+
         self.assertIn(self.filename, dirs, "Nao existe o objeto JSON")
 
     def teste_se_json_de_teste_tem_todas_as_variaveis_nescessarias(self):
@@ -42,7 +41,6 @@ class TestTrafo(TestCase):
             self.assertTrue(
                 False, f"houve um erro na criação do objeto Trafo\nErro: {err}"
             )
-        # import ipdb; ipdb.set_trace()
 
     def teste_calculo_de_dados_do_trafo(self):
         json_variables = load(open(self.pathjson + self.filename, "r"))
@@ -73,8 +71,6 @@ class TestTrafo(TestCase):
         variaveis = _trafo.inicia_as_variaveis(VARIAVEIS, json_variables)
         _trafo.calculo_das_perdas_do_trafo(variaveis, debug=True)
 
-        # import ipdb; ipdb.set_trace()
-
         tests_variables = _trafo.resultado_calculos
         not_pass = {}
         for key, value in tests_variables.items():
@@ -92,8 +88,6 @@ class TestTrafo(TestCase):
                             f"é diferente de {json_variables[key]}",
                         ]
 
-                    # import ipdb; ipdb.set_trace()
-
                     continue
                 if key in []:
                     if not erro_e_aceitavel(
@@ -104,8 +98,6 @@ class TestTrafo(TestCase):
                             value,
                             f"é diferente de {y}. Erro de {r * 100} %",
                         ]
-
-                    # import ipdb; ipdb.set_trace()
 
                     continue
 
@@ -121,14 +113,12 @@ class TestTrafo(TestCase):
                 not_pass[key] = [value, "não existe no JSON " + self.filename]
 
             if key == "atc":
-                # import ipdb; ipdb.set_trace()
                 ...
 
         msg = print_dict(not_pass, " -> ")
         txt = "Erros encontrados ao executar o teste do calculo das dimenções do trafo. "
         txt += "Os erros foram: [{}]".format(msg)
 
-        # import ipdb; ipdb.set_trace()
         self.assertDictEqual(not_pass, {}, txt)
 
     def teste_resultado_calculos_a_partir_do_atributo_no_objeto_Trafo(self):
@@ -144,7 +134,6 @@ class TestTrafo(TestCase):
                 not_pass[key] = [value, json_variables[key]]
 
         msg = print_dict(not_pass, " != ")
-        # import ipdb; ipdb.set_trace()
 
         txt = "Alguns do calculos não estão corretos. Os valores sao: [{}]".format(
             msg

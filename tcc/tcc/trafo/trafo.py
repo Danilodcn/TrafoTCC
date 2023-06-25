@@ -26,7 +26,6 @@ class Trafo(object):
         return f"Trafo ({txt})"
 
     def inicia_as_variaveis(self, nomes: Dict, items: list[Dict]) -> Dict:
-        # import ipdb; ipdb.set_trace()
         retorno = utils.QueryDict({})
         for nome in nomes.keys():
             try:
@@ -50,7 +49,7 @@ class Trafo(object):
         conexao: list = self.constantes["conexao"].split("-")
         # from ipdb import set_trace; set_trace()
         secundario, primario = conexao
-        # import ipdb; ipdb.set_trace()
+
         V1 = self.constantes["V1"]
         V2 = self.constantes["V2"]
 
@@ -67,7 +66,6 @@ class Trafo(object):
     def run(
         self, variaveis: dict, penalidade: bool = False, **kw
     ) -> tuple[float, float]:
-        # import ipdb; ipdb.set_trace()
         # assert VARIAVEIS.keys() == variaveis.keys()
 
         return self.calculo_das_perdas_do_trafo(
@@ -98,7 +96,6 @@ class Trafo(object):
             Rjan = variaveis["Rjan"]
             rel = variaveis["rel"]
         except:
-            # import ipdb; ipdb.set_trace()
             Jbt, Jat, Bm, Ksw, kt, Rjan, rel = variaveis
 
         Et = kt * sqrt(S)  #  é a tensão eficaz por espiras [V/e]
@@ -107,7 +104,7 @@ class Trafo(object):
 
         Ac = Et / (4.44 * f * Bm) * 1e6  # é a área efetiva da coluna  [mm2]
         Abc = Ac / Ke  #  é a área bruta da coluna [mm2]
-        # import ipdb; ipdb.set_trace()
+
         numero_degraus = tabelas.tabela_2_3(
             Abc / 1000
         )  # numero de degraus conforme a tabela 2.3 pg 44 tese
@@ -140,8 +137,6 @@ class Trafo(object):
         k = tabelas.tabela_2_5(tipo, numero_degraus)
         d = sqrt(Ac / k)
 
-        # import ipdb; ipdb.set_trace()
-
         # x = (Ac * 4 / pi) ** .5 # TODO talvez vamos calcular d usando d como o diametro de Ac
         Kw = Ksw / (30 + Vf2)  #   TODO Kw deveria vir da tabela 2.1.
         # na equação 2.26 usa esse Kw e diz que ele é definido na tabela 2.1
@@ -173,7 +168,6 @@ class Trafo(object):
         Bfe = Dfe * 1e-9  # Densidade do ferro em [Kg / mm³]
         Mc = Vferc * Bfe  # Massa da culatra  [Kg]
 
-        # import ipdb; ipdb.set_trace()
         # TODO realizar os testes a partir daqui
 
         Pic = tabelas.perda_magnetica_do_nucleo(Bm)  # Perda magnética [W/Kg]
@@ -212,7 +206,6 @@ class Trafo(object):
         )  # N1 enrolamento do lado da BT conforme trafo WEG DE 150 KVA
 
         # Io = sqrt(Ip ** 2 + Iq ** 2) # A corrente a vazio [A]
-        # import ipdb; ipdb.set_trace()
 
         I1 = S / 3 / Vf1  # FIXME S é a potencia total do Trafo
         Fc1 = I1 / Jbt
@@ -268,7 +261,7 @@ class Trafo(object):
         Pj = (R1 * I1**2 + R2 * I2**2) * 3
         PerdasT = Po + Pj
         Mativa = MAT3 + Mbt3 + MT
-        # import ipdb; ipdb.set_trace()
+
         # Mativa *= 3
         # assert isinstance(penalidade, int)
         if penalidade == 1:
@@ -311,7 +304,6 @@ class Trafo(object):
             if Fc > Fc_max:
                 f1 = f1 + abs(Fc - Fc_max) * f_multiplicativo_fc + Perda_max
                 f2 = f2 + abs(Fc - Fc_max) * f_multiplicativo_fc + Mativa_max
-                # import ipdb; ipdb.set_trace(context=30)
 
             PerdasT, Mativa = f1, f2
 
@@ -403,7 +395,6 @@ class Trafo(object):
             # para_teste = {
             #     "Pic": Pic,
             # }
-            # import ipdb; ipdb.set_trace()
 
             self.resultado_calculos.update(para_teste)
 
@@ -582,7 +573,6 @@ def faz_nada():
     # para_teste = {
     #     "Pic": Pic,
     # }
-    # import ipdb; ipdb.set_trace()
 
     self.resultado_calculos.update(para_teste)
 

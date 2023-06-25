@@ -27,7 +27,6 @@ class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):
         dados = load(open(self.teste, "r"))
         ag = AG(**dados)
         self.assertIsNotNone(ag, "Algo errado")
-        # import ipdb; ipdb.set_trace()
 
     def teste_plotagem_das_duas_primeiras_gerações(self):
         dados = load(open(self.teste, "r"))
