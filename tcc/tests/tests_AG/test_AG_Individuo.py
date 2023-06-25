@@ -2,23 +2,16 @@ import os
 from json import load
 from unittest import TestCase
 
-try:
-    from AG.Populacao import VARIAVEIS
-    from AG.Individuo import Individuo
-    from AG.funcoes import verifica_dominancia, e_dominado
-    from Trafo.CONSTANTES import VARIACOES, CONSTANTES_DADAS
-    from Trafo.trafo import Trafo
+from tcc.AG.Populacao import VARIAVEIS
+from tcc.AG.Individuo import Individuo
+from tcc.AG.funcoes import verifica_dominancia, e_dominado
+from tcc.trafo.CONSTANTES import VARIACOES, CONSTANTES_DADAS
+from tcc.trafo.trafo import Trafo
 
-except ImportError as error:
-    print(f"Erro no import em {__name__}: {error}")
-    #import ipdb; ipdb.set_trace()
-    from .AG.Individuo import Individuo
-    from .Trafo.trafo import Trafo
 
-try:
-    from .utils import erro_e_aceitavel, print_dict
-except:
-    from utils import erro_e_aceitavel, print_dict
+
+
+from tests.utils import erro_e_aceitavel, print_dict
 
 
 class Teste_AG_Criação_Individuo(TestCase):

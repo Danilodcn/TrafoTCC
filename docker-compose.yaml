@@ -1,0 +1,6 @@
+version: '3.0'
+
+services:
+  tcc:
+    entrypoint: poetry run pytest . -s -vv --disable-warnings
+    build: .

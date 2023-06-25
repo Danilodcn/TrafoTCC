@@ -4,16 +4,9 @@ from unittest import TestCase
 
 from matplotlib import pyplot as plt
 
-try:
-    from AG.AG import AG
+from tcc.AG.AG import AG
 
-except ImportError as error:
-    #import ipdb; ipdb.set_trace()
-    pass
-try:
-    from .utils import erro_e_aceitavel, print_dict
-except:
-    from utils import erro_e_aceitavel, print_dict
+from tests.utils import erro_e_aceitavel, print_dict
 
 
 class Teste_Criação_do_Objeto_Algoritmo_genético(TestCase):

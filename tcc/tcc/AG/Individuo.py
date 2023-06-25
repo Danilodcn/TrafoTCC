@@ -4,13 +4,9 @@ import numpy.random as rd
 import numpy as np
 
 
-try:
-    from Trafo.trafo import Trafo
-    from Trafo.CONSTANTES import VARIAVEIS, CONSTANTES_DADAS, VARIACOES
-    from AG.funcoes import verifica_dominancia, e_dominado
-except:
-    from .Trafo import trafo as Trafo
-    from .AG.funcoes import verifica_dominancia, e_dominado
+from tcc.trafo.trafo import Trafo
+from tcc.trafo.CONSTANTES import VARIAVEIS, CONSTANTES_DADAS, VARIACOES
+from tcc.AG.funcoes import verifica_dominancia, e_dominado
     
 
 

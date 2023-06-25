@@ -1,17 +1,9 @@
 import itertools as it
-from Trafo.CONSTANTES import VARIAVEIS
+from tcc.trafo.CONSTANTES import VARIAVEIS
 
-try:
-    from .Populacao import Populacao
-    from .Individuo import Individuo
-    # Trafo.CONSTANTES import VARIAVEIS
-except ImportError:
-    # import ipdb; ipdb.set_trace()
-    from Populacao import Populacao
-    from Individuo import Individuo
-    # from Trafo.CONSTANTES import VARIAVEIS
+from tcc.AG.Populacao import Populacao
+from tcc.AG.Individuo import Individuo
 
-# input(VARIAVEIS)
 import pandas as pd
 
 

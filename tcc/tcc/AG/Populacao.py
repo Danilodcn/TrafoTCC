@@ -5,27 +5,17 @@ import numpy.random as rd
 import numpy as np
 from matplotlib import pyplot as plt
 
-try:
-    from Trafo.trafo import Trafo
-    from Trafo.CONSTANTES import VARIAVEIS, VARIACOES
-except:
-    from .Trafo import trafo as Trafo
+from tcc.trafo.trafo import Trafo
+from tcc.trafo.CONSTANTES import VARIAVEIS, VARIACOES
 
-try:
-    from .Individuo import Individuo
-except:
-    from Individuo import Individuo
-try:
-    from AG.funcoes import (
-            calcular_objetivo, 
-            verifica_dominancia, 
-            e_dominado, 
-            distribui_argumentos, 
-            distribui_argumentos_passando_tupla
-        ) 
-except:
-    from funcoes import calcular_objetivo, verifica_dominancia, e_dominado
-
+from tcc.AG.Individuo import Individuo
+from tcc.AG.funcoes import (
+    calcular_objetivo, 
+    verifica_dominancia, 
+    e_dominado, 
+    distribui_argumentos, 
+    distribui_argumentos_passando_tupla
+) 
 
 def create_suproblem(n_obj, n_pop, T):
     """

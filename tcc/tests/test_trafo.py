@@ -3,14 +3,9 @@ from json import load
 import os, sys
 sys.path.append(os.getcwd())
 
-try: 
-    from Trafo import trafo, CONSTANTES
-    from Utils import utils
+from tcc.trafo import trafo, CONSTANTES
+from tcc.utils import utils
 
-except Exception as e:
-    print(f"o erro foi {e}")
-    from .Utils import utils
-    from .Trafo import trafo, CONSTANTES
 
 CONSTANTES_DADAS = CONSTANTES.CONSTANTES_DADAS 
 VARIAVEIS = CONSTANTES.VARIAVEIS

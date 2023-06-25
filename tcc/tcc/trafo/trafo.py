@@ -1,19 +1,8 @@
 from typing import Dict, List
 from math import sqrt, pi, cos, sin
 import numpy as np
-
-import os, sys
-sys.path.append(os.getcwd())
-
-try: 
-    from Utils import utils, tabelas
-except Exception as e: 
-    print(f"O erro foi:  {e}")
-    from .Utils import utils, tabelas
-try: 
-    from .CONSTANTES import CONSTANTES_DADAS, VARIAVEIS
-except: 
-    from CONSTANTES import CONSTANTES_DADAS, VARIAVEIS
+from tcc.utils import utils, tabelas
+from tcc.trafo.CONSTANTES import CONSTANTES_DADAS, VARIAVEIS
 
 class TrafoError(Exception): pass
 
@@ -33,7 +22,7 @@ class Trafo(object):
         return f"Trafo ({txt})"
 
 
-    def inicia_as_variaveis(self, nomes: Dict, items: [Dict]) -> Dict:
+    def inicia_as_variaveis(self, nomes: Dict, items: list[Dict]) -> Dict:
         # import ipdb; ipdb.set_trace()
         retorno = utils.QueryDict({})
         for nome in nomes.keys():
@@ -70,13 +59,13 @@ class Trafo(object):
         }
         self.resultado_calculos.update(para_teste)
 
-    def run(self, variaveis: dict, penalidade: bool=False, **kw) -> (float, float):
+    def run(self, variaveis: dict, penalidade: bool=False, **kw) -> tuple[float, float]:
         # import ipdb; ipdb.set_trace()
         # assert VARIAVEIS.keys() == variaveis.keys()
 
         return self.calculo_das_perdas_do_trafo(variaveis, penalidade=penalidade)
 
-    def calculo_das_perdas_do_trafo(self, variaveis: [dict, List], penalidade=False, debug: bool = False):
+    def calculo_das_perdas_do_trafo(self, variaveis: list[dict, List], penalidade=False, debug: bool = False):
         Vf1 = self.resultado_calculos.Vf1
         Vf2 = self.resultado_calculos.Vf2
         

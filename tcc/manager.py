@@ -54,7 +54,7 @@ def tests():
 )
 def teste(t, error, verbose, npop, grafico, ag):
     """
-        Exemplo de uso: python .\manager.py teste -t 13 -error 0.001 -v
+        Exemplo de uso: python manager.py teste -t 13 -error 0.001 -v
     """
 
     print("==#==" * 22)

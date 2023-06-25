@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "tcc"
+version = "0.1.0"
+description = ""
+authors = ["Danilo Nascimento <daconnas.dcn@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.0.2"
+seaborn = "^0.12.2"
+bz2file = "^0.98"
+
+
+[tool.poetry.group.development.dependencies]
+ipdb = "^0.13.13"
+pytest = "^7.4.0"
+click = "^8.1.3"
+black = "^23.3.0"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

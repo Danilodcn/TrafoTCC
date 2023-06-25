@@ -3,22 +3,12 @@ from json import load
 from unittest import TestCase
 from matplotlib import pyplot as plt
 
-try:
-    from AG.Populacao import Populacao
-    from AG.Individuo import Individuo
-    from Trafo.CONSTANTES import VARIACOES, CONSTANTES_DADAS
-    from Trafo.trafo import Trafo
+from tcc.AG.Populacao import Populacao
+from tcc.AG.Individuo import Individuo
+from tcc.trafo.CONSTANTES import VARIACOES, CONSTANTES_DADAS
+from tcc.trafo.trafo import Trafo
 
-except ImportError as error:
-    print(f"Erro no import em {__name__}: {error}")
-    #import ipdb; ipdb.set_trace()
-    from .AG.Individuo import Individuo
-    from .Trafo.trafo import Trafo
-
-try:
-    from .utils import erro_e_aceitavel, print_dict
-except:
-    from utils import erro_e_aceitavel, print_dict
+from tests.utils import erro_e_aceitavel, print_dict
     
 class Teste_AG_Cria_População(TestCase):
     def setUp(self):
