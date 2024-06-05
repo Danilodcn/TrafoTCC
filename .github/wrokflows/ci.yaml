@@ -1,0 +1,25 @@
+name: CI
+on:
+  pull_request:
+    branches: ['master', 'main']
+    paths-ignore: ['docs/**', 'escrita/**']
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install black and isort
+        run: pip install black isort
+
+      - name: Run linter
+        run: |
+          black . --check
+          isort . --check
