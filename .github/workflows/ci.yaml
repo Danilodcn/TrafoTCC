@@ -43,4 +43,4 @@ jobs:
       
       - name: run testes
         working-directory: tcc
-        run: pytest .
+        run: poetry run pytest .
