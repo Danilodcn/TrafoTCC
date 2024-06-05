@@ -23,7 +23,7 @@ jobs:
         run: flake8 tcc
 
   tests:
-    needs: [linter]
+    # needs: [linter]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
