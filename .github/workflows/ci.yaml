@@ -38,7 +38,9 @@ jobs:
         run: pip install poetry
       
       - name: install dependencies
+        working-directory: tcc
         run: poetry install
       
       - name: run testes
-        run: cd tcc && pytest .
+        working-directory: tcc
+        run: pytest .
