@@ -194,9 +194,7 @@ class Trafo(object):
 
         atc = tabelas.curva_BH(Bm)
         atj = tabelas.curva_BH(By)
-        import ipdb
 
-        ipdb.set_trace()
         ATj = 2 * W * atj  # A força magnetomotriz na culatra [Ae]
         ATc = 3 * hw * atc  # A força magnetomotriz na coluna [Ae]
 

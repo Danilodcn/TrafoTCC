@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: ['master', 'main']
+    paths-ignore: ['docs/**', 'escrita/**']
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install black and isort
+        run: pip install black isort flake8
+
+      - name: Run linter
+        run: flake8 tcc
+
+  tests:
+    # needs: [linter]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install poetry 
+        run: pip install poetry
+      
+      - name: install dependencies
+        working-directory: tcc
+        run: poetry install
+      
+      - name: run testes
+        working-directory: tcc
+        run: poetry run pytest .
